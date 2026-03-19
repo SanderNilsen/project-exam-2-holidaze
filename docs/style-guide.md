@@ -3,7 +3,8 @@
 ### Primary Colors
 
 **Primary Blue**  
-- Blue 800 – `#1e40af`  
+- Default: Blue 700 – `#1d4ed8`  
+- Hover: Blue 800 – `#1e40af`  
 - Usage: Main branding, primary buttons, navigation links, logo  
 
 **Accent Sky Blue**  
