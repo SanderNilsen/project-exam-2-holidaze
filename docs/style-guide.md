@@ -107,3 +107,27 @@
 **Info Icon**  
 - Sky 500 – `#0ea5e9`  
 - Usage: Icons inside info components
+
+## Typography
+
+### Font Family
+
+**Default System Font Stack**
+```css
+font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+```
+### Font Sizes
+
+Based on 16px base size:
+- `--text-xs: 12px` - Small labels, metadata
+- `--text-sm: 14px` - Secondary text
+- `--text-base: 16px` - Body text
+- `--text-lg: 18px` - Emphasized body
+- `--text-xl: 20px` - Section headings
+- `--text-2xl: 24px` - Page subheadings
+- `--text-3xl: 32px` - Main headings
+
+### Font Weights
+
+- `--font-weight-normal: 400` - Regular text, body copy
+- `--font-weight-medium: 500` - Headings, labels, buttons, emphasis
