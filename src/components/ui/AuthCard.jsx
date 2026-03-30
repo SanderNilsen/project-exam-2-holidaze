@@ -11,22 +11,21 @@ const Card = styled.div`
 `;
 
 const Title = styled.h1`
-  margin: 0 0 28px;
+  margin: 0 0 24px;
   font-size: 24px;
   font-weight: 700;
   color: var(--text);
 `;
 
-const FooterText = styled.p`
-  margin: 20px 0 0;
+const Footer = styled.p`
+  margin: 16px 0 0;
   text-align: center;
-  font-size: 14px;
+  font-size: 12px;
   color: var(--text-muted);
 `;
 
 const FooterLink = styled(Link)`
   color: var(--primary);
-  font-weight: 500;
   text-decoration: none;
 
   &:hover {
@@ -43,19 +42,19 @@ export default function AuthCard({
 }) {
   return (
     <Card>
-      <Title>{title}</Title>
+      {title && <Title>{title}</Title>}
 
       {children}
 
       {(footerText || footerLinkText) && (
-        <FooterText>
+        <Footer>
           {footerText}{" "}
           {footerLinkTo && (
             <FooterLink to={footerLinkTo}>
               {footerLinkText}
             </FooterLink>
           )}
-        </FooterText>
+        </Footer>
       )}
     </Card>
   );
