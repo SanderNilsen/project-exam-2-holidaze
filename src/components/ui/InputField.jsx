@@ -1,8 +1,8 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 const Field = styled.div`
   display: grid;
-  gap: 8px;
+  gap: 6px;
 `;
 
 const Label = styled.label`
@@ -29,6 +29,23 @@ const Input = styled.input`
     border-color: var(--accent);
     box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
   }
+
+  ${({ $error }) =>
+    $error &&
+    css`
+      border-color: #dc2626;
+
+      &:focus {
+        border-color: #dc2626;
+        box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
+      }
+    `}
+`;
+
+const ErrorText = styled.p`
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: #dc2626;
 `;
 
 export default function InputField({
@@ -36,18 +53,24 @@ export default function InputField({
   label,
   type = "text",
   placeholder,
+  error,
   ...props
 }) {
   return (
     <Field>
       <Label htmlFor={id}>{label}</Label>
+
       <Input
         id={id}
         name={id}
         type={type}
         placeholder={placeholder}
+        $error={error}
+        aria-invalid={!!error}
         {...props}
       />
+
+      {error && <ErrorText>{error}</ErrorText>}
     </Field>
   );
 }
