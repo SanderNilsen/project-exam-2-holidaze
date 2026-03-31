@@ -1,5 +1,6 @@
 import { useState } from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 import InputField from "../components/ui/InputField";
 import PrimaryButton from "../components/ui/PrimaryButton";
 import AuthCard from "../components/ui/AuthCard";
@@ -43,6 +44,8 @@ function validateLoginForm(values) {
 }
 
 export default function Login() {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -50,7 +53,6 @@ export default function Login() {
 
   const [errors, setErrors] = useState({});
   const [formError, setFormError] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   function handleChange(event) {
@@ -67,7 +69,6 @@ export default function Login() {
     }));
 
     setFormError("");
-    setSuccessMessage("");
   }
 
   async function handleSubmit(event) {
@@ -76,7 +77,6 @@ export default function Login() {
     const validationErrors = validateLoginForm(formData);
     setErrors(validationErrors);
     setFormError("");
-    setSuccessMessage("");
 
     if (Object.keys(validationErrors).length > 0) {
       return;
@@ -90,8 +90,10 @@ export default function Login() {
         password: formData.password,
       });
 
-      setSuccessMessage("Login successful.");
-      console.log("Logged in user:", data);
+      localStorage.setItem("token", data.data.accessToken);
+      localStorage.setItem("user", JSON.stringify(data.data));
+
+      navigate("/");
     } catch (error) {
       setFormError(error.message || "Something went wrong.");
     } finally {
@@ -132,7 +134,6 @@ export default function Login() {
             />
 
             <FormMessage variant="error">{formError}</FormMessage>
-            <FormMessage variant="success">{successMessage}</FormMessage>
 
             <PrimaryButton type="submit" disabled={isSubmitting}>
               {isSubmitting ? "Logging in..." : "Login"}
