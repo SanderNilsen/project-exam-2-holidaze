@@ -63,7 +63,7 @@ const Bottom = styled.div`
   margin-top: 40px;
   padding-top: 20px;
   border-top: 1px solid #334155;
-  font-size: 13px;
+  font-size: 12px;
   color: #94a3b8;
 `;
 

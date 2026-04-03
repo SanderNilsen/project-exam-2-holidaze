@@ -30,14 +30,14 @@ const Content = styled.div`
 
 const Title = styled.h3`
   margin: 0;
-  font-size: 1.1rem;
+  font-size: 18px;
   font-weight: 500;
   color: var(--text);
 `;
 
 const Location = styled.p`
   margin: 0;
-  font-size: 0.9rem;
+  font-size: 14px;
   color: var(--text-muted);
 `;
 
@@ -49,7 +49,7 @@ const MetaRow = styled.div`
 
 const MetaText = styled.p`
   margin: 0;
-  font-size: 0.85rem;
+  font-size: 14px;
   color: var(--text-muted);
 
   strong {
@@ -69,7 +69,7 @@ const Actions = styled.div`
 
 const Price = styled.p`
   margin: 0;
-  font-size: 1.2rem;
+  font-size: 18px;
   font-weight: 500;
   color: #22c55e;
 `;
@@ -87,7 +87,7 @@ const ViewButton = styled.button`
   border-radius: 10px;
   background: transparent;
   color: var(--primary);
-  font-size: 0.95rem;
+  font-size: 14px;
   cursor: pointer;
 `;
 
@@ -98,7 +98,7 @@ const CancelButton = styled.button`
   border-radius: 10px;
   background: transparent;
   color: #ef4444;
-  font-size: 0.95rem;
+  font-size: 14px;
   cursor: pointer;
 `;
 

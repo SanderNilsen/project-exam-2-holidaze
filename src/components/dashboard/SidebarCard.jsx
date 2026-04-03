@@ -9,7 +9,7 @@ const Card = styled.section`
 
 const Title = styled.h2`
   margin: 0 0 18px;
-  font-size: 1.5rem;
+  font-size: 24px;
   font-weight: 600;
   color: var(--text);
 `;

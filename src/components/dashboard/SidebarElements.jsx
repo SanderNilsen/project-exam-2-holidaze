@@ -13,7 +13,7 @@ export const MenuItem = styled.button`
   background: transparent;
   color: var(--text);
   text-align: left;
-  font-size: 0.95rem;
+  font-size: 14px;
   cursor: pointer;
 
   &:hover {
@@ -38,13 +38,13 @@ export const StatItem = styled.div`
 
 export const StatLabel = styled.p`
   margin: 0;
-  font-size: 0.9rem;
+  font-size: 14px;
   color: var(--text-muted);
 `;
 
 export const StatValue = styled.p`
   margin: 0;
-  font-size: 1.15rem;
+  font-size: 16px;
   font-weight: 600;
   color: var(--text);
 `;

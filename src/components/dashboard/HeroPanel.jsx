@@ -42,19 +42,19 @@ const TextGroup = styled.div`
 
 const Name = styled.h1`
   margin: 0;
-  font-size: 2rem;
+  font-size: 32px;
   font-weight: 600;
 `;
 
 const Email = styled.p`
   margin: 0;
-  font-size: 1rem;
+  font-size: 16px;
   opacity: 0.95;
 `;
 
 const Role = styled.p`
   margin: 0;
-  font-size: 1rem;
+  font-size: 16px;
   opacity: 0.95;
 `;
 
@@ -65,7 +65,7 @@ const ActionButton = styled.button`
   border-radius: 10px;
   background: #ffffff;
   color: var(--primary);
-  font-size: 0.95rem;
+  font-size: 16px;
   font-weight: 500;
   cursor: pointer;
 

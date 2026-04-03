@@ -7,7 +7,7 @@ const Section = styled.section`
 
 const Title = styled.h2`
   margin: 0;
-  font-size: 2rem;
+  font-size: 32px;
   font-weight: 600;
   color: var(--text);
 `;

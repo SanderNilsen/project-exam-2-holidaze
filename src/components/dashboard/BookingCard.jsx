@@ -29,14 +29,14 @@ const Content = styled.div`
 
 const Name = styled.h3`
   margin: 0;
-  font-size: 1.15rem;
+  font-size: 18px;
   font-weight: 500;
   color: var(--text);
 `;
 
 const Venue = styled.p`
   margin: 0;
-  font-size: 0.9rem;
+  font-size: 14px;
   color: var(--text-muted);
 `;
 
@@ -48,7 +48,7 @@ const MetaRow = styled.div`
 
 const MetaText = styled.p`
   margin: 0;
-  font-size: 0.85rem;
+  font-size: 14px;
   color: var(--text-muted);
 
   strong {
@@ -69,7 +69,7 @@ const ViewButton = styled.button`
   border-radius: 10px;
   background: transparent;
   color: var(--primary);
-  font-size: 0.95rem;
+  font-size: 14px;
   cursor: pointer;
 `;
 
