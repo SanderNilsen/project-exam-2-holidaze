@@ -196,10 +196,12 @@ export default function Register() {
                 Register as venue manager
               </CheckboxLabel>
 
-              <InfoBox>
-                A venue manager account is used for managing and adding venues.
-                If you only want to book venues, leave this box unchecked.
-              </InfoBox>
+              {formData.venueManager && (
+                <InfoBox>
+                  A venue manager account is used for managing and adding venues.
+                  If you only want to book venues, leave this box unchecked.
+                </InfoBox>
+              )}
             </CheckboxGroup>
 
             <FormMessage variant="error">{formError}</FormMessage>
