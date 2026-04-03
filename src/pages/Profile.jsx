@@ -53,6 +53,8 @@ const pastBookings = [
 ];
 
 export default function Profile() {
+  const user = JSON.parse(localStorage.getItem("user"));
+
   const sidebar = (
     <>
       <SidebarCard title="Account">
@@ -66,17 +68,19 @@ export default function Profile() {
         <StatsList>
           <StatItem>
             <StatLabel>Total Bookings</StatLabel>
-            <StatValue>3</StatValue>
+            <StatValue>{upcomingBookings.length + pastBookings.length}</StatValue>
           </StatItem>
 
           <StatItem>
             <StatLabel>Upcoming trips</StatLabel>
-            <StatValue>2</StatValue>
+            <StatValue>{upcomingBookings.length}</StatValue>
           </StatItem>
 
           <StatItem>
-            <StatLabel>Member since</StatLabel>
-            <StatValue>January 2026</StatValue>
+            <StatLabel>Member type</StatLabel>
+            <StatValue>
+              {user?.venueManager ? "Venue Manager" : "Customer"}
+            </StatValue>
           </StatItem>
         </StatsList>
       </SidebarCard>
@@ -86,9 +90,9 @@ export default function Profile() {
   return (
     <>
       <HeroPanel
-        name="UserName"
-        email="user@stud.noroff.no"
-        role="Customer Account"
+        name={user?.name || "UserName"}
+        email={user?.email || "user@stud.noroff.no"}
+        role={user?.venueManager ? "Manager Account" : "Customer Account"}
         buttonText="Edit Profile"
       />
 
