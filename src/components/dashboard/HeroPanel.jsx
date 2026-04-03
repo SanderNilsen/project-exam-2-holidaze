@@ -79,6 +79,7 @@ export default function HeroPanel({
   email,
   role,
   buttonText = "Edit Profile",
+  onEdit,
 }) {
   return (
     <Hero>
@@ -92,7 +93,9 @@ export default function HeroPanel({
           </TextGroup>
         </ProfileInfo>
 
-        <ActionButton type="button">{buttonText}</ActionButton>
+        <ActionButton type="button" onClick={onEdit}>
+          {buttonText}
+        </ActionButton>
       </HeroContainer>
     </Hero>
   );

@@ -1,8 +1,13 @@
+import { useState } from "react";
+import styled from "styled-components";
 import HeroPanel from "../components/dashboard/HeroPanel";
 import DashboardShell from "../components/dashboard/DashboardShell";
 import SidebarCard from "../components/dashboard/SidebarCard";
 import SectionBlock from "../components/dashboard/SectionBlock";
 import ProfileVenueCard from "../components/dashboard/ProfileVenueCard";
+import EditModal from "../components/dashboard/EditModal";
+import InputField from "../components/ui/InputField";
+import PrimaryButton from "../components/ui/PrimaryButton";
 import {
   MenuList,
   MenuItem,
@@ -12,6 +17,34 @@ import {
   StatLabel,
   StatValue,
 } from "../components/dashboard/SidebarElements";
+
+const ModalForm = styled.form`
+  display: grid;
+  gap: 18px;
+`;
+
+const SecondaryButton = styled.button`
+  height: 44px;
+  margin-top: 8px;
+  padding: 0 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text);
+  font-size: 16px;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--background-light);
+  }
+`;
+
+const ButtonRow = styled.div`
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+`;
 
 const upcomingBookings = [
   {
@@ -54,6 +87,8 @@ const pastBookings = [
 
 export default function Profile() {
   const user = JSON.parse(localStorage.getItem("user"));
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState("");
 
   const sidebar = (
     <>
@@ -87,6 +122,12 @@ export default function Profile() {
     </>
   );
 
+  function handleSubmit(event) {
+    event.preventDefault();
+    console.log("Avatar URL:", avatarUrl);
+    setIsModalOpen(false);
+  }
+
   return (
     <>
       <HeroPanel
@@ -94,6 +135,7 @@ export default function Profile() {
         email={user?.email || "user@stud.noroff.no"}
         role={user?.venueManager ? "Manager Account" : "Customer Account"}
         buttonText="Edit Profile"
+        onEdit={() => setIsModalOpen(true)}
       />
 
       <DashboardShell sidebar={sidebar}>
@@ -109,6 +151,35 @@ export default function Profile() {
           ))}
         </SectionBlock>
       </DashboardShell>
+
+      <EditModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title="Edit profile"
+        description="Add a public image URL to update your avatar."
+      >
+        <ModalForm onSubmit={handleSubmit}>
+          <InputField
+            id="avatarUrl"
+            label="Avatar URL"
+            type="url"
+            placeholder="https://example.com/avatar.jpg"
+            value={avatarUrl}
+            onChange={(event) => setAvatarUrl(event.target.value)}
+          />
+
+          <ButtonRow>
+            <SecondaryButton
+              type="button"
+              onClick={() => setIsModalOpen(false)}
+            >
+              Cancel
+            </SecondaryButton>
+
+            <PrimaryButton type="submit">Save changes</PrimaryButton>
+          </ButtonRow>
+        </ModalForm>
+      </EditModal>
     </>
   );
 }

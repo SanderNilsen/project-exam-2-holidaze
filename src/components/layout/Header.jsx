@@ -77,10 +77,22 @@ const NavItem = styled(NavLink)`
   }
 `;
 
-const UserRow = styled.div`
+const UserRow = styled(NavLink)`
   display: flex;
   align-items: center;
   gap: 10px;
+  text-decoration: none;
+  cursor: pointer;
+  color: var(--text-muted);
+
+  &.active {
+    color: var(--primary);
+    font-weight: 600;
+  }
+
+  &:hover {
+    color: var(--text);
+  }
 `;
 
 const Avatar = styled.div`
@@ -93,7 +105,7 @@ const Avatar = styled.div`
 
 const Username = styled.span`
   font-size: 14px;
-  color: var(--text);
+  color: inherit;
 `;
 
 const Button = styled.button`
@@ -169,7 +181,7 @@ export default function Header() {
               </>
             ) : (
               <>
-                <UserRow>
+                <UserRow to={user?.venueManager ? "/manager" : "/profile"}>
                   <Avatar />
                   <Username>{user?.name || "User"}</Username>
                 </UserRow>
@@ -221,7 +233,7 @@ export default function Header() {
             </MobileButtonGroup>
           ) : (
             <MobileUserSection>
-              <UserRow>
+              <UserRow to={user?.venueManager ? "/manager" : "/profile"}>
                 <Avatar />
                 <Username>{user?.name || "User"}</Username>
               </UserRow>
