@@ -5,7 +5,7 @@ import InputField from "../components/ui/InputField";
 import PrimaryButton from "../components/ui/PrimaryButton";
 import AuthCard from "../components/ui/AuthCard";
 import FormMessage from "../components/ui/FormMessage";
-import { loginUser } from "../api/auth";
+import { loginUser, createApiKey } from "../api/auth";
 
 const PageWrapper = styled.section`
   background: var(--background-light);
@@ -85,14 +85,19 @@ export default function Login() {
     setIsSubmitting(true);
 
     try {
-      const data = await loginUser({
+      const loginData = await loginUser({
         email: formData.email.trim(),
         password: formData.password,
       });
 
-      localStorage.setItem("token", data.data.accessToken);
-      localStorage.setItem("user", JSON.stringify(data.data));
+      const token = loginData.data.accessToken;
+      const apiKey = await createApiKey(token);
 
+      localStorage.setItem("token", token);
+      localStorage.setItem("apiKey", apiKey);
+      localStorage.setItem("user", JSON.stringify(loginData.data));
+
+      window.dispatchEvent(new Event("authChanged"));
       navigate("/");
     } catch (error) {
       setFormError(error.message || "Something went wrong.");

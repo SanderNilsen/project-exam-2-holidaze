@@ -8,6 +8,8 @@ import ProfileVenueCard from "../components/dashboard/ProfileVenueCard";
 import EditModal from "../components/dashboard/EditModal";
 import InputField from "../components/ui/InputField";
 import PrimaryButton from "../components/ui/PrimaryButton";
+import FormMessage from "../components/ui/FormMessage";
+import { updateAvatar } from "../api/profile";
 import {
   MenuList,
   MenuItem,
@@ -86,9 +88,73 @@ const pastBookings = [
 ];
 
 export default function Profile() {
-  const user = JSON.parse(localStorage.getItem("user"));
+  const storedUser = JSON.parse(localStorage.getItem("user") || "null");
+  const token = localStorage.getItem("token");
+  const apiKey = localStorage.getItem("apiKey");
+
+  const [user, setUser] = useState(storedUser);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [avatarUrl, setAvatarUrl] = useState("");
+  const [avatarUrl, setAvatarUrl] = useState(user?.avatar?.url || "");
+  const [formError, setFormError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  function openModal() {
+    setAvatarUrl(user?.avatar?.url || "");
+    setFormError("");
+    setIsModalOpen(true);
+  }
+
+  function closeModal() {
+    setIsModalOpen(false);
+    setFormError("");
+  }
+
+  async function handleAvatarSubmit(event) {
+    event.preventDefault();
+
+    setFormError("");
+
+    if (!user?.name) {
+      setFormError("User not found.");
+      return;
+    }
+
+    if (!token || !apiKey) {
+      setFormError("Missing authentication.");
+      return;
+    }
+
+    if (!avatarUrl.trim()) {
+      setFormError("Avatar URL is required.");
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+
+      const updatedProfile = await updateAvatar({
+        name: user.name,
+        token,
+        apiKey,
+        avatarUrl: avatarUrl.trim(),
+        alt: `${user.name} avatar`,
+      });
+
+      const updatedUser = {
+        ...user,
+        avatar: updatedProfile.avatar,
+      };
+
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      setUser(updatedUser);
+      window.dispatchEvent(new Event("userUpdated"));
+      closeModal();
+    } catch (error) {
+      setFormError(error.message || "Something went wrong.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
 
   const sidebar = (
     <>
@@ -122,12 +188,6 @@ export default function Profile() {
     </>
   );
 
-  function handleSubmit(event) {
-    event.preventDefault();
-    console.log("Avatar URL:", avatarUrl);
-    setIsModalOpen(false);
-  }
-
   return (
     <>
       <HeroPanel
@@ -135,7 +195,8 @@ export default function Profile() {
         email={user?.email || "user@stud.noroff.no"}
         role={user?.venueManager ? "Manager Account" : "Customer Account"}
         buttonText="Edit Profile"
-        onEdit={() => setIsModalOpen(true)}
+        avatarUrl={user?.avatar?.url}
+        onEdit={openModal}
       />
 
       <DashboardShell sidebar={sidebar}>
@@ -154,11 +215,11 @@ export default function Profile() {
 
       <EditModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={closeModal}
         title="Edit profile"
         description="Add a public image URL to update your avatar."
       >
-        <ModalForm onSubmit={handleSubmit}>
+        <ModalForm onSubmit={handleAvatarSubmit}>
           <InputField
             id="avatarUrl"
             label="Avatar URL"
@@ -168,15 +229,16 @@ export default function Profile() {
             onChange={(event) => setAvatarUrl(event.target.value)}
           />
 
+          <FormMessage variant="error">{formError}</FormMessage>
+
           <ButtonRow>
-            <SecondaryButton
-              type="button"
-              onClick={() => setIsModalOpen(false)}
-            >
+            <SecondaryButton type="button" onClick={closeModal}>
               Cancel
             </SecondaryButton>
 
-            <PrimaryButton type="submit">Save changes</PrimaryButton>
+            <PrimaryButton type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Saving..." : "Save changes"}
+            </PrimaryButton>
           </ButtonRow>
         </ModalForm>
       </EditModal>

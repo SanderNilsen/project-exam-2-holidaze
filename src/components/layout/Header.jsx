@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 
@@ -101,6 +101,10 @@ const Avatar = styled.div`
   border: 2px solid var(--primary);
   border-radius: 50%;
   flex-shrink: 0;
+  background-color: #fff;
+  background-image: ${({ $src }) => ($src ? `url(${$src})` : "none")};
+  background-size: cover;
+  background-position: center;
 `;
 
 const Username = styled.span`
@@ -146,19 +150,42 @@ export default function Header() {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const token = localStorage.getItem("token");
-  const user = JSON.parse(localStorage.getItem("user"));
+  const [token, setToken] = useState(localStorage.getItem("token"));
+  const [user, setUser] = useState(
+    JSON.parse(localStorage.getItem("user") || "null")
+  );
+
+  useEffect(() => {
+    function syncAuthState() {
+      setToken(localStorage.getItem("token"));
+      setUser(JSON.parse(localStorage.getItem("user") || "null"));
+    }
+
+    window.addEventListener("storage", syncAuthState);
+    window.addEventListener("authChanged", syncAuthState);
+    window.addEventListener("userUpdated", syncAuthState);
+
+    return () => {
+      window.removeEventListener("storage", syncAuthState);
+      window.removeEventListener("authChanged", syncAuthState);
+      window.removeEventListener("userUpdated", syncAuthState);
+    };
+  }, []);
 
   function handleLogout() {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    localStorage.removeItem("apiKey");
     setMenuOpen(false);
+    window.dispatchEvent(new Event("authChanged"));
     navigate("/login");
   }
 
   function closeMenu() {
     setMenuOpen(false);
   }
+
+  const profilePath = user?.venueManager ? "/manager" : "/profile";
 
   return (
     <Wrapper>
@@ -181,8 +208,8 @@ export default function Header() {
               </>
             ) : (
               <>
-                <UserRow to={user?.venueManager ? "/manager" : "/profile"}>
-                  <Avatar />
+                <UserRow to={profilePath}>
+                  <Avatar $src={user?.avatar?.url} />
                   <Username>{user?.name || "User"}</Username>
                 </UserRow>
 
@@ -233,8 +260,8 @@ export default function Header() {
             </MobileButtonGroup>
           ) : (
             <MobileUserSection>
-              <UserRow to={user?.venueManager ? "/manager" : "/profile"}>
-                <Avatar />
+              <UserRow to={profilePath} onClick={closeMenu}>
+                <Avatar $src={user?.avatar?.url} />
                 <Username>{user?.name || "User"}</Username>
               </UserRow>
 

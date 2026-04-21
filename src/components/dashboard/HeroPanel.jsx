@@ -30,7 +30,10 @@ const Avatar = styled.div`
   width: 88px;
   height: 88px;
   border-radius: 50%;
-  background: #ffffff;
+  background-color: #ffffff;
+  background-image: ${({ $src }) => ($src ? `url(${$src})` : "none")};
+  background-size: cover;
+  background-position: center;
   border: 2px solid rgba(255, 255, 255, 0.35);
   flex-shrink: 0;
 `;
@@ -79,13 +82,15 @@ export default function HeroPanel({
   email,
   role,
   buttonText = "Edit Profile",
+  avatarUrl,
   onEdit,
 }) {
   return (
     <Hero>
       <HeroContainer>
         <ProfileInfo>
-          <Avatar />
+          <Avatar $src={avatarUrl} />
+
           <TextGroup>
             <Name>{name}</Name>
             <Email>{email}</Email>
