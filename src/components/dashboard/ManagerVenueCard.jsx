@@ -95,7 +95,7 @@ const ViewButton = styled.button`
   cursor: pointer;
 `;
 
-export default function VenueCard({
+export default function ManagerVenueCard({
   image,
   title,
   location,

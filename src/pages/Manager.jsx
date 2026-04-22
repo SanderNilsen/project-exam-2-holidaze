@@ -2,7 +2,7 @@ import HeroPanel from "../components/dashboard/HeroPanel";
 import DashboardShell from "../components/dashboard/DashboardShell";
 import SidebarCard from "../components/dashboard/SidebarCard";
 import SectionBlock from "../components/dashboard/SectionBlock";
-import VenueCard from "../components/dashboard/VenueCard";
+import ManagerVenueCard from "../components/dashboard/ManagerVenueCard";
 import BookingCard from "../components/dashboard/BookingCard";
 import {
   MenuList,
@@ -90,7 +90,7 @@ export default function Manager() {
       <DashboardShell sidebar={sidebar}>
         <SectionBlock title="My Venues">
           {myVenues.map((venue) => (
-            <VenueCard key={venue.id} {...venue} />
+            <ManagerVenueCard key={venue.id} {...venue} />
           ))}
         </SectionBlock>
 
