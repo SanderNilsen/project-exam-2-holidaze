@@ -1,6 +1,9 @@
+import { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import VenueCard from "../components/venues/VenueCard";
+import FormMessage from "../components/ui/FormMessage";
+import { getVenues } from "../api/venues";
 
 const PageWrapper = styled.section`
   background: var(--background-light);
@@ -78,10 +81,13 @@ const Section = styled.section`
 `;
 
 const SectionTitle = styled.h2`
-  margin-bottom: 28px;
+  margin: 0 0 28px;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
 `;
 
-const Grid = styled.div`
+const VenueGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 36px;
@@ -95,51 +101,88 @@ const Grid = styled.div`
   }
 `;
 
-const featuredVenues = [
-  {
-    id: 1,
-    title: "Scandinavian Apartment with Fjord View",
-    location: "Oslo, Norway",
-    guests: 4,
-    description:
-      "Modern apartment in Oslo with fjord views and central location.",
-    price: 180,
-    rating: 4.7,
-    image:
-      "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85",
-    facilities: ["Wifi", "Pet-friendly", "Breakfast"],
-  },
-  {
-    id: 2,
-    title: "Scandinavian Apartment with Fjord View",
-    location: "Oslo, Norway",
-    guests: 4,
-    description:
-      "Modern apartment in Oslo with fjord views and central location.",
-    price: 180,
-    rating: 4.7,
-    image:
-      "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85",
-    facilities: ["Wifi", "Pet-friendly", "Breakfast"],
-  },
-  {
-    id: 3,
-    title: "Scandinavian Apartment with Fjord View",
-    location: "Oslo, Norway",
-    guests: 4,
-    description:
-      "Modern apartment in Oslo with fjord views and central location.",
-    price: 180,
-    rating: 4.7,
-    image:
-      "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85",
-    facilities: ["Wifi", "Pet-friendly", "Breakfast"],
-  },
-];
+const LoadingText = styled.p`
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-muted);
+`;
+
+const EmptyText = styled.p`
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-muted);
+`;
+
+function formatLocation(location) {
+  const city = location?.city;
+  const country = location?.country;
+
+  if (city && country) return `${city}, ${country}`;
+  if (city) return city;
+  if (country) return country;
+
+  return "Location not available";
+}
+
+function getFacilities(meta) {
+  const facilities = [];
+
+  if (meta?.wifi) facilities.push("Wifi");
+  if (meta?.parking) facilities.push("Parking");
+  if (meta?.breakfast) facilities.push("Breakfast");
+  if (meta?.pets) facilities.push("Pet-friendly");
+
+  return facilities;
+}
 
 export default function Home() {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user") || "null");
+
+  const [venues, setVenues] = useState([]);
+  const [search, setSearch] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [pageError, setPageError] = useState("");
+
+  useEffect(() => {
+    async function loadFeaturedVenues() {
+      try {
+        setIsLoading(true);
+        setPageError("");
+
+        const result = await getVenues({ page: 1, limit: 6 });
+        setVenues(result.data);
+      } catch (error) {
+        setPageError(error.message || "Something went wrong.");
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    loadFeaturedVenues();
+  }, []);
+
+  const featuredVenues = useMemo(() => {
+    const filtered = venues.filter((venue) => {
+      const query = search.trim().toLowerCase();
+
+      if (!query) return true;
+
+      const name = venue.name?.toLowerCase() || "";
+      const description = venue.description?.toLowerCase() || "";
+      const city = venue.location?.city?.toLowerCase() || "";
+      const country = venue.location?.country?.toLowerCase() || "";
+
+      return (
+        name.includes(query) ||
+        description.includes(query) ||
+        city.includes(query) ||
+        country.includes(query)
+      );
+    });
+
+    return filtered.slice(0, 3);
+  }, [venues, search]);
 
   function handleProfileClick() {
     if (!user) {
@@ -156,14 +199,19 @@ export default function Home() {
         <HeroContent>
           <HeroTitle>Find Your Perfect Stay</HeroTitle>
 
-          <SearchInput placeholder="Search..." />
+          <SearchInput
+            type="text"
+            placeholder="Search featured venues..."
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+          />
 
           <ButtonRow>
-            <SecondaryButton onClick={() => navigate("/venues")}>
+            <SecondaryButton type="button" onClick={() => navigate("/venues")}>
               All Venues
             </SecondaryButton>
 
-            <PrimaryButton onClick={handleProfileClick}>
+            <PrimaryButton type="button" onClick={handleProfileClick}>
               View Profile
             </PrimaryButton>
           </ButtonRow>
@@ -173,21 +221,31 @@ export default function Home() {
       <Section>
         <SectionTitle>Featured Venues</SectionTitle>
 
-        <Grid>
-          {featuredVenues.map((venue) => (
-            <VenueCard
-              key={venue.id}
-              image={venue.image}
-              title={venue.title}
-              location={venue.location}
-              guests={venue.guests}
-              description={venue.description}
-              price={venue.price}
-              rating={venue.rating}
-              facilities={venue.facilities}
-            />
-          ))}
-        </Grid>
+        {isLoading && <LoadingText>Loading featured venues...</LoadingText>}
+
+        {pageError && <FormMessage variant="error">{pageError}</FormMessage>}
+
+        {!isLoading && !pageError && featuredVenues.length === 0 && (
+          <EmptyText>No featured venues found.</EmptyText>
+        )}
+
+        {!isLoading && !pageError && featuredVenues.length > 0 && (
+          <VenueGrid>
+            {featuredVenues.map((venue) => (
+              <VenueCard
+                key={venue.id}
+                image={venue.media?.[0]?.url}
+                title={venue.name}
+                location={formatLocation(venue.location)}
+                guests={venue.maxGuests}
+                description={venue.description}
+                price={venue.price}
+                rating={venue.rating}
+                facilities={getFacilities(venue.meta)}
+              />
+            ))}
+          </VenueGrid>
+        )}
       </Section>
     </PageWrapper>
   );
