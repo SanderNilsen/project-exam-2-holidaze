@@ -1,4 +1,11 @@
 import styled from "styled-components";
+import { Link } from "react-router-dom";
+
+const CardLink = styled(Link)`
+  display: block;
+  text-decoration: none;
+  color: inherit;
+`;
 
 const Card = styled.article`
   overflow: hidden;
@@ -6,6 +13,12 @@ const Card = styled.article`
   border: 1px solid var(--border);
   border-radius: 14px;
   box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.12);
+  }
 `;
 
 const ImageWrapper = styled.div`
@@ -93,6 +106,7 @@ const Facility = styled.span`
 `;
 
 export default function VenueCard({
+  id,
   image,
   title,
   location,
@@ -103,33 +117,35 @@ export default function VenueCard({
   facilities = [],
 }) {
   return (
-    <Card>
-      <ImageWrapper>
-        <Image src={image} alt={title} />
-        {rating && <Rating>{rating} ⭐</Rating>}
-      </ImageWrapper>
+    <CardLink to={`/venues/${id}`}>
+      <Card>
+        <ImageWrapper>
+          <Image src={image} alt={title} />
+          {rating ? <Rating>{rating} ⭐</Rating> : null}
+        </ImageWrapper>
 
-      <Content>
-        <Title>{title}</Title>
+        <Content>
+          <Title>{title}</Title>
 
-        <MetaRow>
-          <Location>{location}</Location>
-          <Guests>{guests} guests</Guests>
-        </MetaRow>
+          <MetaRow>
+            <Location>{location}</Location>
+            <Guests>{guests} guests</Guests>
+          </MetaRow>
 
-        <Description>{description}</Description>
+          <Description>{description}</Description>
 
-        <Price>
-          ${price}
-          <PriceUnit>/night</PriceUnit>
-        </Price>
+          <Price>
+            ${price}
+            <PriceUnit>/night</PriceUnit>
+          </Price>
 
-        <Facilities>
-          {facilities.map((item) => (
-            <Facility key={item}>{item}</Facility>
-          ))}
-        </Facilities>
-      </Content>
-    </Card>
+          <Facilities>
+            {facilities.map((item) => (
+              <Facility key={item}>{item}</Facility>
+            ))}
+          </Facilities>
+        </Content>
+      </Card>
+    </CardLink>
   );
 }

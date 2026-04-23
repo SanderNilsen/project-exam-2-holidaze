@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import VenueCard from "../components/venues/VenueCard";
 import FormMessage from "../components/ui/FormMessage";
 import { getVenues } from "../api/venues";
+import { formatLocation, getFacilities } from "../utils/venuesUtils";
 
 const PageWrapper = styled.section`
   background: var(--background-light);
@@ -113,28 +114,6 @@ const EmptyText = styled.p`
   color: var(--text-muted);
 `;
 
-function formatLocation(location) {
-  const city = location?.city;
-  const country = location?.country;
-
-  if (city && country) return `${city}, ${country}`;
-  if (city) return city;
-  if (country) return country;
-
-  return "Location not available";
-}
-
-function getFacilities(meta) {
-  const facilities = [];
-
-  if (meta?.wifi) facilities.push("Wifi");
-  if (meta?.parking) facilities.push("Parking");
-  if (meta?.breakfast) facilities.push("Breakfast");
-  if (meta?.pets) facilities.push("Pet-friendly");
-
-  return facilities;
-}
-
 export default function Home() {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user") || "null");
@@ -234,6 +213,7 @@ export default function Home() {
             {featuredVenues.map((venue) => (
               <VenueCard
                 key={venue.id}
+                id={venue.id}
                 image={venue.media?.[0]?.url}
                 title={venue.name}
                 location={formatLocation(venue.location)}
