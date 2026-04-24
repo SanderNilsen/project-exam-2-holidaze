@@ -183,7 +183,7 @@ export default function Venues() {
               <VenueCard
                 key={venue.id}
                 id={venue.id}
-                image={venue.media?.[0]?.url}
+                image={venue.media?.[0]?.url || "/images/placeholder-venue.svg"}
                 title={venue.name}
                 location={formatLocation(venue.location)}
                 guests={venue.maxGuests}
