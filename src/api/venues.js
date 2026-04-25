@@ -40,7 +40,9 @@ export async function getVenues({ page = 1, limit = 12 } = {}) {
  * @throws {Error} Throws an error if the request fails
  */
 export async function getVenueById(id) {
-  const response = await fetch(`${API_BASE_URL}/holidaze/venues/${id}`);
+  const response = await fetch(
+    `${API_BASE_URL}/holidaze/venues/${id}?_bookings=true`
+  );
 
   const data = await response.json();
 

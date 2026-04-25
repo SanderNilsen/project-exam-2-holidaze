@@ -126,6 +126,10 @@ const HelperText = styled.p`
   color: var(--text-muted);
 `;
 
+function datesOverlap(startA, endA, startB, endB) {
+  return startA < endB && startB < endA;
+}
+
 export default function VenueDetails() {
   const { id } = useParams();
 
@@ -186,6 +190,21 @@ export default function VenueDetails() {
 
     if (Number(bookingForm.guests) > venue.maxGuests) {
       setBookingError(`Max ${venue.maxGuests} guests allowed.`);
+      return;
+    }
+
+    const selectedStart = new Date(bookingForm.dateFrom);
+    const selectedEnd = new Date(bookingForm.dateTo);
+
+    const isUnavailable = venue.bookings?.some((booking) => {
+      const bookedStart = new Date(booking.dateFrom);
+      const bookedEnd = new Date(booking.dateTo);
+
+      return datesOverlap(selectedStart, selectedEnd, bookedStart, bookedEnd);
+    });
+
+    if (isUnavailable) {
+      setBookingError("These dates are already booked. Please choose other dates.");
       return;
     }
 
@@ -290,7 +309,11 @@ export default function VenueDetails() {
           {/* RIGHT SIDE */}
           <BookingCard>
             <BookingTitle>Book this venue</BookingTitle>
-
+          {venue.bookings?.length > 0 && (
+            <HelperText>
+              {venue.bookings.length} existing booking(s) for this venue.
+            </HelperText>
+          )}
             <HelperText>
               Select your dates and number of guests.
             </HelperText>
