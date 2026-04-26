@@ -49,3 +49,33 @@ export async function updateAvatar({ name, token, apiKey, avatarUrl, alt }) {
 
   return data.data;
 }
+
+/**
+ * Fetches a Holidaze profile with bookings.
+ *
+ * @param {Object} params
+ * @param {string} params.name - Profile name / username
+ * @param {string} params.token - JWT access token
+ * @param {string} params.apiKey - Noroff API key
+ * @returns {Promise<Object>} Profile data with bookings
+ */
+export async function getProfileBookings({ name, token, apiKey }) {
+  const response = await fetch(
+    `${API_BASE_URL}/holidaze/profiles/${name}?_bookings=true`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "X-Noroff-API-Key": apiKey,
+      },
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data?.errors?.[0]?.message || "Failed to fetch bookings.");
+  }
+
+  return data.data;
+}

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import FormMessage from "../components/ui/FormMessage";
 import { getVenueById } from "../api/venues";
 import { formatLocation, getFacilities } from "../utils/venuesUtils";
@@ -132,6 +132,7 @@ function datesOverlap(startA, endA, startB, endB) {
 
 export default function VenueDetails() {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const [venue, setVenue] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -222,6 +223,10 @@ export default function VenueDetails() {
 
       setBookingSuccess("Booking created successfully.");
 
+      setTimeout(() => {
+        navigate("/profile");
+      }, 800);
+      
       setBookingForm({
         dateFrom: "",
         dateTo: "",

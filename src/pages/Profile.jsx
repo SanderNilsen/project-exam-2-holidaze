@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import HeroPanel from "../components/dashboard/HeroPanel";
 import DashboardShell from "../components/dashboard/DashboardShell";
@@ -9,7 +9,7 @@ import EditModal from "../components/dashboard/EditModal";
 import InputField from "../components/ui/InputField";
 import PrimaryButton from "../components/ui/PrimaryButton";
 import FormMessage from "../components/ui/FormMessage";
-import { updateAvatar } from "../api/profile";
+import { getProfileBookings, updateAvatar } from "../api/profile";
 import {
   MenuList,
   MenuItem,
@@ -48,44 +48,30 @@ const ButtonRow = styled.div`
   flex-wrap: wrap;
 `;
 
-const upcomingBookings = [
-  {
-    id: 1,
-    title: "Scandinavian Apartment with Fjord View",
-    location: "Oslo, Norway",
-    checkIn: "Mar 25, 2026",
-    checkOut: "Mar 30, 2026",
-    price: "$180/night",
-    image:
-      "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=400&q=80",
-    showCancel: true,
-  },
-  {
-    id: 2,
-    title: "Scandinavian Apartment with Fjord View",
-    location: "Oslo, Norway",
-    checkIn: "Mar 25, 2026",
-    checkOut: "Mar 30, 2026",
-    price: "$180/night",
-    image:
-      "https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=400&q=80",
-    showCancel: true,
-  },
-];
+const EmptyText = styled.p`
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 14px;
+`;
 
-const pastBookings = [
-  {
-    id: 3,
-    title: "Scandinavian Apartment with Fjord View",
-    location: "Oslo, Norway",
-    checkIn: "Mar 25, 2026",
-    checkOut: "Mar 30, 2026",
-    price: "$180/night",
-    image:
-      "https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=400&q=80",
-    muted: true,
-  },
-];
+function formatDate(dateString) {
+  return new Date(dateString).toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+}
+
+function getBookingLocation(venue) {
+  const city = venue?.location?.city;
+  const country = venue?.location?.country;
+
+  if (city && country) return `${city}, ${country}`;
+  if (city) return city;
+  if (country) return country;
+
+  return "Location not available";
+}
 
 export default function Profile() {
   const storedUser = JSON.parse(localStorage.getItem("user") || "null");
@@ -93,10 +79,41 @@ export default function Profile() {
   const apiKey = localStorage.getItem("apiKey");
 
   const [user, setUser] = useState(storedUser);
+  const [bookings, setBookings] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [pageError, setPageError] = useState("");
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState(user?.avatar?.url || "");
   const [formError, setFormError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    async function loadBookings() {
+      try {
+        setIsLoading(true);
+        setPageError("");
+
+        if (!user?.name || !token || !apiKey) {
+          throw new Error("You must be logged in to view your bookings.");
+        }
+
+        const profile = await getProfileBookings({
+          name: user.name,
+          token,
+          apiKey,
+        });
+
+        setBookings(profile.bookings || []);
+      } catch (error) {
+        setPageError(error.message || "Something went wrong.");
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    loadBookings();
+  }, [user?.name, token, apiKey]);
 
   function openModal() {
     setAvatarUrl(user?.avatar?.url || "");
@@ -156,6 +173,16 @@ export default function Profile() {
     }
   }
 
+  const today = new Date();
+
+  const upcomingBookings = bookings.filter(
+    (booking) => new Date(booking.dateFrom) >= today
+  );
+
+  const pastBookings = bookings.filter(
+    (booking) => new Date(booking.dateFrom) < today
+  );
+
   const sidebar = (
     <>
       <SidebarCard title="Account">
@@ -169,7 +196,7 @@ export default function Profile() {
         <StatsList>
           <StatItem>
             <StatLabel>Total Bookings</StatLabel>
-            <StatValue>{upcomingBookings.length + pastBookings.length}</StatValue>
+            <StatValue>{bookings.length}</StatValue>
           </StatItem>
 
           <StatItem>
@@ -188,6 +215,10 @@ export default function Profile() {
     </>
   );
 
+  if (pageError) {
+    return <FormMessage variant="error">{pageError}</FormMessage>;
+  }
+
   return (
     <>
       <HeroPanel
@@ -201,15 +232,59 @@ export default function Profile() {
 
       <DashboardShell sidebar={sidebar}>
         <SectionBlock title="Upcoming bookings">
-          {upcomingBookings.map((booking) => (
-            <ProfileVenueCard key={booking.id} {...booking} />
-          ))}
+          {isLoading && <EmptyText>Loading bookings...</EmptyText>}
+
+          {!isLoading && upcomingBookings.length === 0 && (
+            <EmptyText>No upcoming bookings yet.</EmptyText>
+          )}
+
+          {!isLoading &&
+            upcomingBookings.map((booking) => (
+              <ProfileVenueCard
+                key={booking.id}
+                title={booking.venue?.name || "Venue"}
+                location={getBookingLocation(booking.venue)}
+                checkIn={formatDate(booking.dateFrom)}
+                checkOut={formatDate(booking.dateTo)}
+                price={
+                  booking.venue?.price
+                    ? `$${booking.venue.price}/night`
+                    : "Price unavailable"
+                }
+                image={
+                  booking.venue?.media?.[0]?.url ||
+                  "/images/placeholder-venue.svg"
+                }
+                showCancel
+              />
+            ))}
         </SectionBlock>
 
         <SectionBlock title="Past bookings">
-          {pastBookings.map((booking) => (
-            <ProfileVenueCard key={booking.id} {...booking} />
-          ))}
+          {!isLoading && pastBookings.length === 0 && (
+            <EmptyText>No past bookings yet.</EmptyText>
+          )}
+
+          {!isLoading &&
+            pastBookings.map((booking) => (
+              <ProfileVenueCard
+                key={booking.id}
+                title={booking.venue?.name || "Venue"}
+                location={getBookingLocation(booking.venue)}
+                checkIn={formatDate(booking.dateFrom)}
+                checkOut={formatDate(booking.dateTo)}
+                price={
+                  booking.venue?.price
+                    ? `$${booking.venue.price}/night`
+                    : "Price unavailable"
+                }
+                image={
+                  booking.venue?.media?.[0]?.url ||
+                  "/images/placeholder-venue.svg"
+                }
+                muted
+              />
+            ))}
         </SectionBlock>
       </DashboardShell>
 
