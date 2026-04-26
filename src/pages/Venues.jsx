@@ -118,12 +118,55 @@ const Select = styled.select`
   font-size: 14px;
 `;
 
+const LoadMoreButton = styled.button`
+  justify-self: center;
+  height: 44px;
+  padding: 0 22px;
+  border: none;
+  border-radius: 10px;
+  background: var(--primary);
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--primary-hover);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+`;
+
 export default function Venues() {
   const [venues, setVenues] = useState([]);
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [pageError, setPageError] = useState("");
+
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+
+  async function handleLoadMore() {
+  try {
+    setIsLoadingMore(true);
+
+    const nextPage = page + 1;
+    const result = await getVenues({ page: nextPage, limit: 12 });
+
+    setVenues((prev) => [...prev, ...result.data]);
+    setPage(nextPage);
+    setHasMore(!result.meta.isLastPage);
+  } catch (error) {
+    setPageError(error.message || "Could not load more venues.");
+  } finally {
+    setIsLoadingMore(false);
+  }
+}
 
   useEffect(() => {
     async function loadVenues() {
@@ -132,7 +175,9 @@ export default function Venues() {
         setPageError("");
 
         const result = await getVenues({ page: 1, limit: 12 });
+
         setVenues(result.data);
+        setHasMore(!result.meta.isLastPage);
       } catch (error) {
         setPageError(error.message || "Something went wrong.");
       } finally {
@@ -219,7 +264,7 @@ export default function Venues() {
           </Select>
         </ControlsRow>
 
-        <ResultsText>{filteredVenues.length} venues available</ResultsText>
+        <ResultsText>{filteredVenues.length} venues loaded</ResultsText>
       </SearchBar>
 
         {isLoading && <LoadingText>Loading venues...</LoadingText>}
@@ -230,7 +275,8 @@ export default function Venues() {
           <EmptyText>No venues matched your search.</EmptyText>
         )}
 
-        {!isLoading && !pageError && filteredVenues.length > 0 && (
+      {!isLoading && !pageError && filteredVenues.length > 0 && (
+        <>
           <VenueGrid>
             {filteredVenues.map((venue) => (
               <VenueCard
@@ -247,7 +293,18 @@ export default function Venues() {
               />
             ))}
           </VenueGrid>
-        )}
+
+          {hasMore && (
+            <LoadMoreButton
+              type="button"
+              onClick={handleLoadMore}
+              disabled={isLoadingMore}
+            >
+              {isLoadingMore ? "Loading..." : "Load More"}
+            </LoadMoreButton>
+          )}
+        </>
+      )}
       </Content>
     </PageWrapper>
   );
