@@ -102,10 +102,26 @@ const VenueGrid = styled.div`
   }
 `;
 
+const ControlsRow = styled.div`
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+`;
+
+const Select = styled.select`
+  height: 44px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--background);
+  color: var(--text);
+  font-size: 14px;
+`;
 
 export default function Venues() {
   const [venues, setVenues] = useState([]);
   const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [pageError, setPageError] = useState("");
 
@@ -130,9 +146,9 @@ export default function Venues() {
   const filteredVenues = useMemo(() => {
     const query = search.trim().toLowerCase();
 
-    if (!query) return venues;
+    let result = venues.filter((venue) => {
+      if (!query) return true;
 
-    return venues.filter((venue) => {
       const name = venue.name?.toLowerCase() || "";
       const description = venue.description?.toLowerCase() || "";
       const city = venue.location?.city?.toLowerCase() || "";
@@ -145,7 +161,30 @@ export default function Venues() {
         country.includes(query)
       );
     });
-  }, [venues, search]);
+
+    switch (sortBy) {
+      case "priceAsc":
+        result = [...result].sort((a, b) => a.price - b.price);
+        break;
+
+      case "priceDesc":
+        result = [...result].sort((a, b) => b.price - a.price);
+        break;
+
+      case "rating":
+        result = [...result].sort((a, b) => b.rating - a.rating);
+        break;
+
+      case "guests":
+        result = [...result].sort((a, b) => b.maxGuests - a.maxGuests);
+        break;
+
+      default:
+        break;
+    }
+
+    return result;
+  }, [venues, search, sortBy]);
 
   return (
     <PageWrapper>
@@ -159,15 +198,29 @@ export default function Venues() {
       </Hero>
 
       <Content>
-        <SearchBar>
+      <SearchBar>
+        <ControlsRow>
           <SearchInput
             type="text"
             placeholder="Search venues..."
             value={search}
             onChange={(event) => setSearch(event.target.value)}
           />
-          <ResultsText>{filteredVenues.length} venues available</ResultsText>
-        </SearchBar>
+
+          <Select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+          >
+            <option value="">Sort by</option>
+            <option value="priceAsc">Price: Low to High</option>
+            <option value="priceDesc">Price: High to Low</option>
+            <option value="rating">Rating</option>
+            <option value="guests">Guests</option>
+          </Select>
+        </ControlsRow>
+
+        <ResultsText>{filteredVenues.length} venues available</ResultsText>
+      </SearchBar>
 
         {isLoading && <LoadingText>Loading venues...</LoadingText>}
 
