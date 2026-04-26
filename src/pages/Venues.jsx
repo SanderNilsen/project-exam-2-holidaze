@@ -4,6 +4,7 @@ import VenueCard from "../components/venues/VenueCard";
 import FormMessage from "../components/ui/FormMessage";
 import { getVenues } from "../api/venues";
 import { formatLocation, getFacilities } from "../utils/venuesUtils";
+import { useSearchParams } from "react-router-dom";
 
 const PageWrapper = styled.section`
   background: var(--background-light);
@@ -141,8 +142,11 @@ const LoadMoreButton = styled.button`
 `;
 
 export default function Venues() {
+  const [searchParams] = useSearchParams();
+  const initialSearch = searchParams.get("search") || "";
+
   const [venues, setVenues] = useState([]);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(initialSearch);
   const [sortBy, setSortBy] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [pageError, setPageError] = useState("");
@@ -151,7 +155,7 @@ export default function Venues() {
   const [hasMore, setHasMore] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
 
-  async function handleLoadMore() {
+async function handleLoadMore() {
   try {
     setIsLoadingMore(true);
 

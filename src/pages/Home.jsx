@@ -114,6 +114,12 @@ const EmptyText = styled.p`
   color: var(--text-muted);
 `;
 
+const SearchForm = styled.form`
+  width: 100%;
+  display: grid;
+  justify-items: center;
+`;
+
 export default function Home() {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user") || "null");
@@ -122,6 +128,18 @@ export default function Home() {
   const [search, setSearch] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [pageError, setPageError] = useState("");
+
+  function handleSearchSubmit(event) {
+  event.preventDefault();
+
+  const query = search.trim();
+
+  if (query) {
+    navigate(`/venues?search=${encodeURIComponent(query)}`);
+  } else {
+    navigate("/venues");
+  }
+}
 
   useEffect(() => {
     async function loadFeaturedVenues() {
@@ -142,26 +160,8 @@ export default function Home() {
   }, []);
 
   const featuredVenues = useMemo(() => {
-    const filtered = venues.filter((venue) => {
-      const query = search.trim().toLowerCase();
-
-      if (!query) return true;
-
-      const name = venue.name?.toLowerCase() || "";
-      const description = venue.description?.toLowerCase() || "";
-      const city = venue.location?.city?.toLowerCase() || "";
-      const country = venue.location?.country?.toLowerCase() || "";
-
-      return (
-        name.includes(query) ||
-        description.includes(query) ||
-        city.includes(query) ||
-        country.includes(query)
-      );
-    });
-
-    return filtered.slice(0, 3);
-  }, [venues, search]);
+    return venues.slice(0, 3);
+  }, [venues]);
 
   function handleProfileClick() {
     if (!user) {
@@ -178,12 +178,14 @@ export default function Home() {
         <HeroContent>
           <HeroTitle>Find Your Perfect Stay</HeroTitle>
 
-          <SearchInput
-            type="text"
-            placeholder="Search featured venues..."
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-          />
+          <SearchForm onSubmit={handleSearchSubmit}>
+            <SearchInput
+              type="text"
+              placeholder="Search venues..."
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+            />
+          </SearchForm>
 
           <ButtonRow>
             <SecondaryButton type="button" onClick={() => navigate("/venues")}>
