@@ -79,3 +79,39 @@ export async function getProfileBookings({ name, token, apiKey }) {
 
   return data.data;
 }
+
+/**
+ * Fetches all venues created by a profile.
+ *
+ * @async
+ * @function getProfileVenues
+ *
+ * @param {Object} params
+ * @param {string} params.name - Profile username
+ * @param {string} params.token - JWT access token
+ * @param {string} params.apiKey - Noroff API key
+ *
+ * @returns {Promise<Array>} Venues created by the profile
+ *
+ * @throws {Error} Throws an error if venues cannot be fetched
+ */
+export async function getProfileVenues({ name, token, apiKey }) {
+  const response = await fetch(
+    `${API_BASE_URL}/holidaze/profiles/${name}/venues?_bookings=true`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "X-Noroff-API-Key": apiKey,
+      },
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data?.errors?.[0]?.message || "Failed to fetch venues.");
+  }
+
+  return data.data;
+}
