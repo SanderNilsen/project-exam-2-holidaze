@@ -18,18 +18,6 @@ import {
   StatValue,
 } from "../components/dashboard/SidebarElements";
 
-const upcomingBookings = [
-  {
-    id: 3,
-    guestName: "UserName",
-    venueTitle: "Scandinavian Apartment with Fjord View",
-    checkIn: "Mar 25, 2026",
-    checkOut: "Mar 30, 2026",
-    guests: 4,
-    primaryAction: "View",
-  },
-];
-
 export default function Manager() {
   const user = JSON.parse(localStorage.getItem("user") || "null");
   const token = localStorage.getItem("token");
@@ -69,6 +57,17 @@ export default function Manager() {
   const totalBookings = venues.reduce((total, venue) => {
     return total + (venue.bookings?.length || 0);
   }, 0);
+
+  const venueBookings = venues.flatMap((venue) =>
+  (venue.bookings || []).map((booking) => ({
+    ...booking,
+    venueTitle: venue.name,
+  }))
+);
+
+const upcomingBookings = venueBookings.filter(
+  (booking) => new Date(booking.dateFrom) >= new Date()
+);
 
   const sidebar = (
     <>
@@ -138,9 +137,32 @@ export default function Manager() {
         </SectionBlock>
 
         <SectionBlock title="Upcoming Bookings">
-          {upcomingBookings.map((booking) => (
-            <BookingCard key={booking.id} {...booking} />
-          ))}
+          {isLoading && <p>Loading bookings...</p>}
+
+          {!isLoading && upcomingBookings.length === 0 && (
+            <p>No upcoming bookings yet.</p>
+          )}
+
+          {!isLoading &&
+            upcomingBookings.map((booking) => (
+              <BookingCard
+                key={booking.id}
+                guestName={booking.customer?.name || "Guest"}
+                venueTitle={booking.venueTitle}
+                checkIn={new Date(booking.dateFrom).toLocaleDateString("en-GB", {
+                  day: "2-digit",
+                  month: "short",
+                  year: "numeric",
+                })}
+                checkOut={new Date(booking.dateTo).toLocaleDateString("en-GB", {
+                  day: "2-digit",
+                  month: "short",
+                  year: "numeric",
+                })}
+                guests={booking.guests}
+                primaryAction="View"
+              />
+            ))}
         </SectionBlock>
       </DashboardShell>
     </>
