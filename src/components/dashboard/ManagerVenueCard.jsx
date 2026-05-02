@@ -75,25 +75,36 @@ const ActionRow = styled.div`
 `;
 
 const EditButton = styled.button`
-  height: 38px;
-  padding: 0 16px;
-  border: 1px solid var(--primary);
+  height: 40px;
+  padding: 0 18px;
+  border: none;
   border-radius: 10px;
-  background: transparent;
+  background: #ffffff;
   color: var(--primary);
-  font-size: 0.95rem;
+  font-size: 16px;
+  font-weight: 500;
   cursor: pointer;
+  border: 1px solid var(--border);
+
+  &:hover {
+    background: #f8fafc;
+  }
 `;
 
 const ViewButton = styled.button`
   height: 38px;
   padding: 0 16px;
-  border: 1px solid var(--border);
+  border: none;
   border-radius: 10px;
-  background: transparent;
-  color: var(--text);
+  background: var(--primary);
+  color: #ffffff;
   font-size: 0.95rem;
   cursor: pointer;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: var(--primary-hover);
+  }
 `;
 
 export default function ManagerVenueCard({

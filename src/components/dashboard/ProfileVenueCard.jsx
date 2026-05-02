@@ -83,23 +83,33 @@ const ActionRow = styled.div`
 const ViewButton = styled.button`
   height: 38px;
   padding: 0 16px;
-  border: 1px solid var(--primary);
+  border: none;
   border-radius: 10px;
-  background: transparent;
-  color: var(--primary);
-  font-size: 14px;
+  background: var(--primary);
+  color: #ffffff;
+  font-size: 0.95rem;
   cursor: pointer;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: var(--primary-hover);
+  }
 `;
 
 const CancelButton = styled.button`
   height: 38px;
   padding: 0 16px;
-  border: 1px solid #ef4444;
+  border: none;
   border-radius: 10px;
-  background: transparent;
-  color: #ef4444;
-  font-size: 14px;
+  background: #ef4444;
+  color: #ffffff;
+  font-size: 0.95rem;
   cursor: pointer;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: #dc2626;
+  }
 `;
 
 export default function ProfileVenueCard({
