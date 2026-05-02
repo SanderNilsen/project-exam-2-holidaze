@@ -26,15 +26,13 @@ const ProfileInfo = styled.div`
   gap: 20px;
 `;
 
-const Avatar = styled.div`
+const Avatar = styled.img`
   width: 88px;
   height: 88px;
   border-radius: 50%;
+  object-fit: cover;
   background-color: #ffffff;
-  background-image: ${({ $src }) => ($src ? `url(${$src})` : "none")};
-  background-size: cover;
-  background-position: center;
-  border: 2px solid rgba(255, 255, 255, 0.35);
+  border: 2px solid var(--border);
   flex-shrink: 0;
 `;
 
@@ -89,8 +87,10 @@ export default function HeroPanel({
     <Hero>
       <HeroContainer>
         <ProfileInfo>
-          <Avatar $src={avatarUrl} />
-
+          <Avatar
+            src={avatarUrl || "/images/avatar-placeholder.svg"}
+            alt={`${name} avatar`}
+          />
           <TextGroup>
             <Name>{name}</Name>
             <Email>{email}</Email>

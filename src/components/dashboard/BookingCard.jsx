@@ -15,10 +15,11 @@ const Card = styled.article`
   }
 `;
 
-const Avatar = styled.div`
+const Avatar = styled.img`
   width: 56px;
   height: 56px;
   border-radius: 50%;
+  object-fit: cover;
   background: #dbeafe;
 `;
 
@@ -56,34 +57,20 @@ const MetaText = styled.p`
   }
 `;
 
-const Actions = styled.div`
-  @media (max-width: 768px) {
-    justify-self: start;
-  }
-`;
-
-const ViewButton = styled.button`
-  height: 38px;
-  padding: 0 16px;
-  border: 1px solid var(--primary);
-  border-radius: 10px;
-  background: transparent;
-  color: var(--primary);
-  font-size: 14px;
-  cursor: pointer;
-`;
-
 export default function BookingCard({
   guestName,
   venueTitle,
   checkIn,
   checkOut,
   guests,
+  avatarUrl,
 }) {
   return (
     <Card>
-      <Avatar />
-
+      <Avatar
+        src={avatarUrl || "/images/avatar-placeholder.svg"}
+        alt={guestName}
+      />
       <Content>
         <Name>{guestName}</Name>
         <Venue>{venueTitle}</Venue>
@@ -100,10 +87,6 @@ export default function BookingCard({
           </MetaText>
         </MetaRow>
       </Content>
-
-      <Actions>
-        <ViewButton type="button">View</ViewButton>
-      </Actions>
     </Card>
   );
 }

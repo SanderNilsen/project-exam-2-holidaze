@@ -290,7 +290,7 @@ const upcomingBookings = venueBookings.filter(
                   year: "numeric",
                 })}
                 guests={booking.guests}
-                primaryAction="View"
+                avatarUrl={booking.customer?.avatar?.url}
               />
             ))}
         </SectionBlock>
