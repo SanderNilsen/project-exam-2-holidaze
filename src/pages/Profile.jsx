@@ -5,9 +5,10 @@ import DashboardShell from "../components/dashboard/DashboardShell";
 import SidebarCard from "../components/dashboard/SidebarCard";
 import SectionBlock from "../components/dashboard/SectionBlock";
 import ProfileVenueCard from "../components/dashboard/ProfileVenueCard";
-import EditModal from "../components/dashboard/EditModal";
+import Modal from "../components/ui/Modal";
 import InputField from "../components/ui/InputField";
 import PrimaryButton from "../components/ui/PrimaryButton";
+import SecondaryButton from "../components/ui/SecondaryButton";
 import FormMessage from "../components/ui/FormMessage";
 import { getProfileBookings, updateAvatar } from "../api/profile";
 import {
@@ -23,22 +24,6 @@ import {
 const ModalForm = styled.form`
   display: grid;
   gap: 18px;
-`;
-
-const SecondaryButton = styled.button`
-  height: 44px;
-  margin-top: 8px;
-  padding: 0 16px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: transparent;
-  color: var(--text);
-  font-size: 16px;
-  cursor: pointer;
-
-  &:hover {
-    background: var(--background-light);
-  }
 `;
 
 const ButtonRow = styled.div`
@@ -288,7 +273,7 @@ export default function Profile() {
         </SectionBlock>
       </DashboardShell>
 
-      <EditModal
+      <Modal
         isOpen={isModalOpen}
         onClose={closeModal}
         title="Edit profile"
@@ -316,7 +301,7 @@ export default function Profile() {
             </PrimaryButton>
           </ButtonRow>
         </ModalForm>
-      </EditModal>
+      </Modal>
     </>
   );
 }

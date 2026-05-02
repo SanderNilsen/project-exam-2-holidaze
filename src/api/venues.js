@@ -52,3 +52,38 @@ export async function getVenueById(id) {
 
   return data.data;
 }
+
+/**
+ * Creates a new venue.
+ *
+ * @async
+ * @function createVenue
+ *
+ * @param {Object} params
+ * @param {string} params.token
+ * @param {string} params.apiKey
+ * @param {Object} params.venue
+ *
+ * @returns {Promise<Object>} Created venue data
+ *
+ * @throws {Error} Throws an error if venue creation fails
+ */
+export async function createVenue({ token, apiKey, venue }) {
+  const response = await fetch(`${API_BASE_URL}/holidaze/venues`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+      "X-Noroff-API-Key": apiKey,
+    },
+    body: JSON.stringify(venue),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data?.errors?.[0]?.message || "Failed to create venue.");
+  }
+
+  return data.data;
+}

@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 const Card = styled.article`
   display: grid;
@@ -96,12 +97,14 @@ const ViewButton = styled.button`
 `;
 
 export default function ManagerVenueCard({
+  id,
   image,
   title,
   location,
   bookings,
   price,
 }) {
+  const navigate = useNavigate();
   return (
     <Card>
       <Image src={image} alt={title} />
@@ -119,7 +122,9 @@ export default function ManagerVenueCard({
 
         <ActionRow>
           <EditButton type="button">Edit</EditButton>
-          <ViewButton type="button">View</ViewButton>
+            <ViewButton type="button" onClick={() => navigate(`/venues/${id}`)}>
+              View
+            </ViewButton>
         </ActionRow>
       </Actions>
     </Card>
