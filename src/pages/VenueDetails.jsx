@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useParams, useNavigate } from "react-router-dom";
 import FormMessage from "../components/ui/FormMessage";
 import { getVenueById } from "../api/venues";
-import { formatLocation, getFacilities } from "../utils/venuesUtils";
+import { formatLocation, getFacilities } from "../utils/venueUtils";
 import InputField from "../components/ui/InputField";
 import PrimaryButton from "../components/ui/PrimaryButton";
 import { createBooking } from "../api/bookings";
@@ -226,7 +226,7 @@ export default function VenueDetails() {
       setTimeout(() => {
         navigate("/profile");
       }, 800);
-      
+
       setBookingForm({
         dateFrom: "",
         dateTo: "",

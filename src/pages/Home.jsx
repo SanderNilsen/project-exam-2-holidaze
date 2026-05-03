@@ -4,17 +4,15 @@ import { useNavigate } from "react-router-dom";
 import VenueCard from "../components/venues/VenueCard";
 import FormMessage from "../components/ui/FormMessage";
 import { getVenues } from "../api/venues";
-import { formatLocation, getFacilities } from "../utils/venuesUtils";
+import { formatLocation, getFacilities } from "../utils/venueUtils";
 
 const PageWrapper = styled.section`
   background: var(--background-light);
 `;
 
 const Hero = styled.section`
+  background: var(--primary);
   min-height: 360px;
-  background:
-    linear-gradient(rgba(15, 23, 42, 0.22), rgba(15, 23, 42, 0.22)),
-    url("/images/home-hero.jpg") center/cover no-repeat;
   display: grid;
   place-items: center;
 `;

@@ -11,7 +11,7 @@ import BookingCard from "../components/dashboard/BookingCard";
 import FormMessage from "../components/ui/FormMessage";
 import { getProfileVenues } from "../api/profile";
 import { createVenue, updateVenue, deleteVenue } from "../api/venues";
-import { formatLocation } from "../utils/venuesUtils";
+import { formatLocation } from "../utils/venueUtils";
 import {
   MenuList,
   MenuItem,

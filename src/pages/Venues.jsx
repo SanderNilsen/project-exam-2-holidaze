@@ -3,7 +3,7 @@ import styled from "styled-components";
 import VenueCard from "../components/venues/VenueCard";
 import FormMessage from "../components/ui/FormMessage";
 import { getVenues } from "../api/venues";
-import { formatLocation, getFacilities } from "../utils/venuesUtils";
+import { formatLocation, getFacilities } from "../utils/venueUtils";
 import { useSearchParams } from "react-router-dom";
 
 const PageWrapper = styled.section`
