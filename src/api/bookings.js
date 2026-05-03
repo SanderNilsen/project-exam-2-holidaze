@@ -49,3 +49,33 @@ export async function createBooking({
 
   return data.data;
 }
+
+/**
+ * Cancels an existing booking.
+ *
+ * @async
+ * @function deleteBooking
+ *
+ * @param {Object} params
+ * @param {string} params.id - Booking id
+ * @param {string} params.token - JWT access token
+ * @param {string} params.apiKey - Noroff API key
+ *
+ * @returns {Promise<void>}
+ *
+ * @throws {Error} Throws an error if booking cancellation fails
+ */
+export async function deleteBooking({ id, token, apiKey }) {
+  const response = await fetch(`${API_BASE_URL}/holidaze/bookings/${id}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "X-Noroff-API-Key": apiKey,
+    },
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data?.errors?.[0]?.message || "Failed to cancel booking.");
+  }
+}

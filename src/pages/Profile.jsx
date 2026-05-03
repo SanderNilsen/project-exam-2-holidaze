@@ -11,6 +11,8 @@ import PrimaryButton from "../components/ui/PrimaryButton";
 import SecondaryButton from "../components/ui/SecondaryButton";
 import FormMessage from "../components/ui/FormMessage";
 import { getProfileBookings, updateAvatar } from "../api/profile";
+import { useNavigate } from "react-router-dom";
+import { deleteBooking } from "../api/bookings";
 import {
   MenuList,
   MenuItem,
@@ -73,6 +75,8 @@ export default function Profile() {
   const [formError, setFormError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     async function loadBookings() {
       try {
@@ -110,6 +114,26 @@ export default function Profile() {
     setIsModalOpen(false);
     setFormError("");
   }
+
+  async function handleCancelBooking(id) {
+  const confirmed = window.confirm(
+    "Are you sure you want to cancel this booking?"
+  );
+
+  if (!confirmed) return;
+
+  try {
+    await deleteBooking({
+      id,
+      token,
+      apiKey,
+    });
+
+    setBookings((prev) => prev.filter((booking) => booking.id !== id));
+  } catch (error) {
+    setPageError(error.message || "Could not cancel booking.");
+  }
+}
 
   async function handleAvatarSubmit(event) {
     event.preventDefault();
@@ -241,6 +265,8 @@ export default function Profile() {
                   "/images/placeholder-venue.svg"
                 }
                 showCancel
+                onView={() => navigate(`/venues/${booking.venue?.id}`)}
+                onCancel={() => handleCancelBooking(booking.id)}
               />
             ))}
         </SectionBlock>
@@ -268,6 +294,7 @@ export default function Profile() {
                   "/images/placeholder-venue.svg"
                 }
                 muted
+                onView={() => navigate(`/venues/${booking.venue?.id}`)}
               />
             ))}
         </SectionBlock>

@@ -121,6 +121,8 @@ export default function ProfileVenueCard({
   price,
   muted = false,
   showCancel = false,
+  onView,
+  onCancel,
 }) {
   return (
     <Card $muted={muted}>
@@ -144,8 +146,15 @@ export default function ProfileVenueCard({
         <Price>{price}</Price>
 
         <ActionRow>
-          <ViewButton type="button">View</ViewButton>
-          {showCancel && <CancelButton type="button">Cancel</CancelButton>}
+          <ViewButton type="button" onClick={onView}>
+            View
+          </ViewButton>
+
+          {showCancel && (
+            <CancelButton type="button" onClick={onCancel}>
+              Cancel
+            </CancelButton>
+          )}
         </ActionRow>
       </Actions>
     </Card>
