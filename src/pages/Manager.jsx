@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import Modal from "../components/ui/Modal";
-import InputField from "../components/ui/InputField";
-import PrimaryButton from "../components/ui/PrimaryButton";
-import SecondaryButton from "../components/ui/SecondaryButton";
+import ManagerVenueForm from "../components/dashboard/ManagerVenueForm";
 import HeroPanel from "../components/dashboard/HeroPanel";
 import DashboardShell from "../components/dashboard/DashboardShell";
 import SidebarCard from "../components/dashboard/SidebarCard";
@@ -12,7 +10,7 @@ import ManagerVenueCard from "../components/dashboard/ManagerVenueCard";
 import BookingCard from "../components/dashboard/BookingCard";
 import FormMessage from "../components/ui/FormMessage";
 import { getProfileVenues } from "../api/profile";
-import { createVenue } from "../api/venues";
+import { createVenue, updateVenue, deleteVenue } from "../api/venues";
 import { formatLocation } from "../utils/venuesUtils";
 import {
   MenuList,
@@ -40,18 +38,6 @@ const AddButton = styled.button`
   }
 `;
 
-const ModalForm = styled.form`
-  display: grid;
-  gap: 18px;
-`;
-
-const ButtonRow = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-  flex-wrap: wrap;
-`;
-
 export default function Manager() {
   const user = JSON.parse(localStorage.getItem("user") || "null");
   const token = localStorage.getItem("token");
@@ -63,6 +49,7 @@ export default function Manager() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formError, setFormError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [editingVenue, setEditingVenue] = useState(null);
 
   const [venueForm, setVenueForm] = useState({
     name: "",
@@ -85,7 +72,32 @@ export default function Manager() {
     setFormError("");
   }
 
+  async function handleDeleteVenue(id) {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this venue?"
+    );
+
+    if (!confirmed) return;
+
+    try {
+      await deleteVenue({ id, token, apiKey });
+      setVenues((prev) => prev.filter((venue) => venue.id !== id));
+    } catch (error) {
+      setPageError(error.message || "Could not delete venue.");
+    }
+  }
+
   function openModal() {
+    setEditingVenue(null);
+    setVenueForm({
+      name: "",
+      description: "",
+      price: "",
+      maxGuests: "",
+      mediaUrl: "",
+      city: "",
+      country: "",
+    });
     setFormError("");
     setIsModalOpen(true);
   }
@@ -95,65 +107,111 @@ export default function Manager() {
     setFormError("");
   }
 
-  async function handleVenueSubmit(event) {
-    event.preventDefault();
+  function openEditModal(venue) {
+  setEditingVenue(venue);
+  setVenueForm({
+    name: venue.name || "",
+    description: venue.description || "",
+    price: venue.price || "",
+    maxGuests: venue.maxGuests || "",
+    mediaUrl: venue.media?.[0]?.url || "",
+    city: venue.location?.city || "",
+    country: venue.location?.country || "",
+  });
+  setFormError("");
+  setIsModalOpen(true);
+}
 
-    try {
-      setIsSubmitting(true);
+async function handleVenueSubmit(event) {
+  event.preventDefault();
 
+  setFormError("");
+
+  if (!venueForm.name.trim()) {
+    setFormError("Venue name is required.");
+    return;
+  }
+
+  if (!venueForm.description.trim()) {
+    setFormError("Description is required.");
+    return;
+  }
+
+  if (!venueForm.price || Number(venueForm.price) < 1) {
+    setFormError("Price must be at least 1.");
+    return;
+  }
+
+  if (!venueForm.maxGuests || Number(venueForm.maxGuests) < 1) {
+    setFormError("Max guests must be at least 1.");
+    return;
+  }
+
+  const venuePayload = {
+    name: venueForm.name.trim(),
+    description: venueForm.description.trim(),
+    price: Number(venueForm.price),
+    maxGuests: Number(venueForm.maxGuests),
+    media: venueForm.mediaUrl.trim()
+      ? [
+          {
+            url: venueForm.mediaUrl.trim(),
+            alt: venueForm.name.trim(),
+          },
+        ]
+      : [],
+    meta: {
+      wifi: false,
+      parking: false,
+      breakfast: false,
+      pets: false,
+    },
+    location: {
+      address: "",
+      city: venueForm.city.trim(),
+      zip: "",
+      country: venueForm.country.trim(),
+      continent: "",
+      lat: 0,
+      lng: 0,
+    },
+  };
+
+  try {
+    setIsSubmitting(true);
+
+    if (editingVenue) {
+      const updatedVenue = await updateVenue({
+        id: editingVenue.id,
+        token,
+        apiKey,
+        venue: venuePayload,
+      });
+
+      setVenues((prev) =>
+        prev.map((venue) =>
+          venue.id === updatedVenue.id
+            ? { ...updatedVenue, bookings: venue.bookings || [] }
+            : venue
+        )
+      );
+    } else {
       const newVenue = await createVenue({
         token,
         apiKey,
-        venue: {
-          name: venueForm.name.trim(),
-          description: venueForm.description.trim(),
-          price: Number(venueForm.price),
-          maxGuests: Number(venueForm.maxGuests),
-          media: venueForm.mediaUrl.trim()
-            ? [
-                {
-                  url: venueForm.mediaUrl.trim(),
-                  alt: venueForm.name.trim(),
-                },
-              ]
-            : [],
-          meta: {
-            wifi: false,
-            parking: false,
-            breakfast: false,
-            pets: false,
-          },
-          location: {
-            address: "",
-            city: venueForm.city.trim(),
-            zip: "",
-            country: venueForm.country.trim(),
-            continent: "",
-            lat: 0,
-            lng: 0,
-          },
-        },
+        venue: venuePayload,
       });
 
-      setVenues((prev) => [newVenue, ...prev]);
-
-      setVenueForm({
-        name: "",
-        description: "",
-        price: "",
-        maxGuests: "",
-        mediaUrl: "",
-        city: "",
-        country: "",
-      });
-
-      closeModal();
-    } catch (error) {
-      setFormError(error.message || "Something went wrong.");
-    } finally {
-      setIsSubmitting(false);
+      setVenues((prev) => [{ ...newVenue, bookings: [] }, ...prev]);
     }
+
+    closeModal();
+  } catch (error) {
+    setFormError(error.message || "Something went wrong.");
+  } finally {
+    setIsSubmitting(false);
   }
+}
 
   useEffect(() => {
     async function loadManagerVenues() {
@@ -262,6 +320,8 @@ const upcomingBookings = venueBookings.filter(
                 location={formatLocation(venue.location)}
                 bookings={venue.bookings?.length || 0}
                 price={`$${venue.price}/night`}
+                onEdit={() => openEditModal(venue)}
+                onDelete={() => handleDeleteVenue(venue.id)}
               />
             ))}
         </SectionBlock>
@@ -298,85 +358,22 @@ const upcomingBookings = venueBookings.filter(
       <Modal
         isOpen={isModalOpen}
         onClose={closeModal}
-        title="Add new venue"
-        description="Fill in the venue details below."
+        title={editingVenue ? "Edit venue" : "Add new venue"}
+        description={
+          editingVenue
+            ? "Update the venue details below."
+            : "Fill in the venue details below."
+        }
       >
-        <ModalForm onSubmit={handleVenueSubmit}>
-          <InputField
-            id="name"
-            label="Venue name"
-            type="text"
-            placeholder="Scandinavian apartment"
-            value={venueForm.name}
-            onChange={handleVenueChange}
-          />
-
-          <InputField
-            id="description"
-            label="Description"
-            type="text"
-            placeholder="Describe your venue"
-            value={venueForm.description}
-            onChange={handleVenueChange}
-          />
-
-          <InputField
-            id="price"
-            label="Price per night"
-            type="number"
-            placeholder="180"
-            value={venueForm.price}
-            onChange={handleVenueChange}
-          />
-
-          <InputField
-            id="maxGuests"
-            label="Max guests"
-            type="number"
-            placeholder="4"
-            value={venueForm.maxGuests}
-            onChange={handleVenueChange}
-          />
-
-          <InputField
-            id="mediaUrl"
-            label="Image URL"
-            type="url"
-            placeholder="https://example.com/image.jpg"
-            value={venueForm.mediaUrl}
-            onChange={handleVenueChange}
-          />
-
-          <InputField
-            id="city"
-            label="City"
-            type="text"
-            placeholder="Oslo"
-            value={venueForm.city}
-            onChange={handleVenueChange}
-          />
-
-          <InputField
-            id="country"
-            label="Country"
-            type="text"
-            placeholder="Norway"
-            value={venueForm.country}
-            onChange={handleVenueChange}
-          />
-
-          <FormMessage variant="error">{formError}</FormMessage>
-
-          <ButtonRow>
-            <SecondaryButton type="button" onClick={closeModal}>
-              Cancel
-            </SecondaryButton>
-
-            <PrimaryButton type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Saving..." : "Create venue"}
-            </PrimaryButton>
-          </ButtonRow>
-        </ModalForm>
+        <ManagerVenueForm
+          venueForm={venueForm}
+          formError={formError}
+          isSubmitting={isSubmitting}
+          editingVenue={editingVenue}
+          onChange={handleVenueChange}
+          onSubmit={handleVenueSubmit}
+          onCancel={closeModal}
+        />
       </Modal>
     </>
   );

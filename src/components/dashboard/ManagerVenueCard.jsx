@@ -107,6 +107,22 @@ const ViewButton = styled.button`
   }
 `;
 
+const DeleteButton = styled.button`
+  height: 38px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 10px;
+  background: #ef4444;
+  color: #ffffff;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: #dc2626;
+  }
+`;
+
 export default function ManagerVenueCard({
   id,
   image,
@@ -114,6 +130,8 @@ export default function ManagerVenueCard({
   location,
   bookings,
   price,
+  onEdit,
+  onDelete,
 }) {
   const navigate = useNavigate();
   return (
@@ -132,10 +150,17 @@ export default function ManagerVenueCard({
         <Price>{price}</Price>
 
         <ActionRow>
-          <EditButton type="button">Edit</EditButton>
-            <ViewButton type="button" onClick={() => navigate(`/venues/${id}`)}>
-              View
-            </ViewButton>
+          <EditButton type="button" onClick={onEdit}>
+            Edit
+          </EditButton>
+
+          <ViewButton type="button" onClick={() => navigate(`/venues/${id}`)}>
+            View
+          </ViewButton>
+
+          <DeleteButton type="button" onClick={onDelete}>
+            Delete
+          </DeleteButton>
         </ActionRow>
       </Actions>
     </Card>

@@ -87,3 +87,69 @@ export async function createVenue({ token, apiKey, venue }) {
 
   return data.data;
 }
+
+/**
+ * Updates an existing venue.
+ *
+ * @async
+ * @function updateVenue
+ *
+ * @param {Object} params
+ * @param {string} params.id - Venue id
+ * @param {string} params.token - JWT access token
+ * @param {string} params.apiKey - Noroff API key
+ * @param {Object} params.venue - Updated venue data
+ *
+ * @returns {Promise<Object>} Updated venue data
+ *
+ * @throws {Error} Throws an error if venue update fails
+ */
+export async function updateVenue({ id, token, apiKey, venue }) {
+  const response = await fetch(`${API_BASE_URL}/holidaze/venues/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+      "X-Noroff-API-Key": apiKey,
+    },
+    body: JSON.stringify(venue),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data?.errors?.[0]?.message || "Failed to update venue.");
+  }
+
+  return data.data;
+}
+
+/**
+ * Deletes an existing venue.
+ *
+ * @async
+ * @function deleteVenue
+ *
+ * @param {Object} params
+ * @param {string} params.id - Venue id
+ * @param {string} params.token - JWT access token
+ * @param {string} params.apiKey - Noroff API key
+ *
+ * @returns {Promise<void>}
+ *
+ * @throws {Error} Throws an error if venue delete fails
+ */
+export async function deleteVenue({ id, token, apiKey }) {
+  const response = await fetch(`${API_BASE_URL}/holidaze/venues/${id}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "X-Noroff-API-Key": apiKey,
+    },
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data?.errors?.[0]?.message || "Failed to delete venue.");
+  }
+}
