@@ -9,6 +9,7 @@ import SectionBlock from "../components/dashboard/SectionBlock";
 import ManagerVenueCard from "../components/dashboard/ManagerVenueCard";
 import BookingCard from "../components/dashboard/BookingCard";
 import FormMessage from "../components/ui/FormMessage";
+import AvatarModal from "../components/dashboard/AvatarModal";
 import { getProfileVenues } from "../api/profile";
 import { createVenue, updateVenue, deleteVenue } from "../api/venues";
 import { formatLocation } from "../utils/venueUtils";
@@ -39,7 +40,8 @@ const AddButton = styled.button`
 `;
 
 export default function Manager() {
-  const user = JSON.parse(localStorage.getItem("user") || "null");
+  const storedUser = JSON.parse(localStorage.getItem("user") || "null");
+  const [user, setUser] = useState(storedUser);
   const token = localStorage.getItem("token");
   const apiKey = localStorage.getItem("apiKey");
 
@@ -60,6 +62,16 @@ export default function Manager() {
     city: "",
     country: "",
   });
+
+  const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
+
+  function openAvatarModal() {
+    setIsAvatarModalOpen(true);
+  }
+
+  function closeAvatarModal() {
+    setIsAvatarModalOpen(false);
+  }
 
   function handleVenueChange(event) {
     const { name, value } = event.target;
@@ -107,7 +119,7 @@ export default function Manager() {
     setFormError("");
   }
 
-  function openEditModal(venue) {
+function openEditModal(venue) {
   setEditingVenue(venue);
   setVenueForm({
     name: venue.name || "",
@@ -297,6 +309,7 @@ const upcomingBookings = venueBookings.filter(
         role="Manager Account"
         buttonText="Edit Profile"
         avatarUrl={user?.avatar?.url}
+        onEdit={openAvatarModal}
       />
 
       <DashboardShell sidebar={sidebar}>
@@ -375,6 +388,14 @@ const upcomingBookings = venueBookings.filter(
           onCancel={closeModal}
         />
       </Modal>
+      <AvatarModal
+        isOpen={isAvatarModalOpen}
+        onClose={closeAvatarModal}
+        user={user}
+        token={token}
+        apiKey={apiKey}
+        onUserUpdated={setUser}
+      />
     </>
   );
 }

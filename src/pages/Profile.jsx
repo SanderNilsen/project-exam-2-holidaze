@@ -1,17 +1,14 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 import HeroPanel from "../components/dashboard/HeroPanel";
 import DashboardShell from "../components/dashboard/DashboardShell";
 import SidebarCard from "../components/dashboard/SidebarCard";
 import SectionBlock from "../components/dashboard/SectionBlock";
 import ProfileVenueCard from "../components/dashboard/ProfileVenueCard";
-import Modal from "../components/ui/Modal";
-import InputField from "../components/ui/InputField";
-import PrimaryButton from "../components/ui/PrimaryButton";
-import SecondaryButton from "../components/ui/SecondaryButton";
+import AvatarModal from "../components/dashboard/AvatarModal";
 import FormMessage from "../components/ui/FormMessage";
-import { getProfileBookings, updateAvatar } from "../api/profile";
-import { useNavigate } from "react-router-dom";
+import { getProfileBookings } from "../api/profile";
 import { deleteBooking } from "../api/bookings";
 import {
   MenuList,
@@ -22,18 +19,6 @@ import {
   StatLabel,
   StatValue,
 } from "../components/dashboard/SidebarElements";
-
-const ModalForm = styled.form`
-  display: grid;
-  gap: 18px;
-`;
-
-const ButtonRow = styled.div`
-  display: flex;
-  gap: 12px;
-  justify-content: flex-end;
-  flex-wrap: wrap;
-`;
 
 const EmptyText = styled.p`
   margin: 0;
@@ -69,13 +54,17 @@ export default function Profile() {
   const [bookings, setBookings] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [pageError, setPageError] = useState("");
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [avatarUrl, setAvatarUrl] = useState(user?.avatar?.url || "");
-  const [formError, setFormError] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
 
   const navigate = useNavigate();
+
+  function openAvatarModal() {
+    setIsAvatarModalOpen(true);
+  }
+
+  function closeAvatarModal() {
+    setIsAvatarModalOpen(false);
+  }
 
   useEffect(() => {
     async function loadBookings() {
@@ -104,17 +93,6 @@ export default function Profile() {
     loadBookings();
   }, [user?.name, token, apiKey]);
 
-  function openModal() {
-    setAvatarUrl(user?.avatar?.url || "");
-    setFormError("");
-    setIsModalOpen(true);
-  }
-
-  function closeModal() {
-    setIsModalOpen(false);
-    setFormError("");
-  }
-
   async function handleCancelBooking(id) {
   const confirmed = window.confirm(
     "Are you sure you want to cancel this booking?"
@@ -134,53 +112,6 @@ export default function Profile() {
     setPageError(error.message || "Could not cancel booking.");
   }
 }
-
-  async function handleAvatarSubmit(event) {
-    event.preventDefault();
-
-    setFormError("");
-
-    if (!user?.name) {
-      setFormError("User not found.");
-      return;
-    }
-
-    if (!token || !apiKey) {
-      setFormError("Missing authentication.");
-      return;
-    }
-
-    if (!avatarUrl.trim()) {
-      setFormError("Avatar URL is required.");
-      return;
-    }
-
-    try {
-      setIsSubmitting(true);
-
-      const updatedProfile = await updateAvatar({
-        name: user.name,
-        token,
-        apiKey,
-        avatarUrl: avatarUrl.trim(),
-        alt: `${user.name} avatar`,
-      });
-
-      const updatedUser = {
-        ...user,
-        avatar: updatedProfile.avatar,
-      };
-
-      localStorage.setItem("user", JSON.stringify(updatedUser));
-      setUser(updatedUser);
-      window.dispatchEvent(new Event("userUpdated"));
-      closeModal();
-    } catch (error) {
-      setFormError(error.message || "Something went wrong.");
-    } finally {
-      setIsSubmitting(false);
-    }
-  }
 
   const today = new Date();
 
@@ -236,7 +167,7 @@ export default function Profile() {
         role={user?.venueManager ? "Manager Account" : "Customer Account"}
         buttonText="Edit Profile"
         avatarUrl={user?.avatar?.url}
-        onEdit={openModal}
+        onEdit={openAvatarModal}
       />
 
       <DashboardShell sidebar={sidebar}>
@@ -300,35 +231,14 @@ export default function Profile() {
         </SectionBlock>
       </DashboardShell>
 
-      <Modal
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        title="Edit profile"
-        description="Add a public image URL to update your avatar."
-      >
-        <ModalForm onSubmit={handleAvatarSubmit}>
-          <InputField
-            id="avatarUrl"
-            label="Avatar URL"
-            type="url"
-            placeholder="https://example.com/avatar.jpg"
-            value={avatarUrl}
-            onChange={(event) => setAvatarUrl(event.target.value)}
-          />
-
-          <FormMessage variant="error">{formError}</FormMessage>
-
-          <ButtonRow>
-            <SecondaryButton type="button" onClick={closeModal}>
-              Cancel
-            </SecondaryButton>
-
-            <PrimaryButton type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Saving..." : "Save changes"}
-            </PrimaryButton>
-          </ButtonRow>
-        </ModalForm>
-      </Modal>
+      <AvatarModal
+        isOpen={isAvatarModalOpen}
+        onClose={closeAvatarModal}
+        user={user}
+        token={token}
+        apiKey={apiKey}
+        onUserUpdated={setUser}
+      />
     </>
   );
 }
