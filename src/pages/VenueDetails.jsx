@@ -8,6 +8,7 @@ import InputField from "../components/ui/InputField";
 import PrimaryButton from "../components/ui/PrimaryButton";
 import { createBooking } from "../api/bookings";
 import BookingCalendar from "../components/venues/BookingCalendar";
+import VenueMap from "../components/venues/VenueMap";
 
 const PageWrapper = styled.section`
   background: var(--background-light);
@@ -321,6 +322,8 @@ export default function VenueDetails() {
                 <Facility key={item}>{item}</Facility>
               ))}
             </Facilities>
+
+            <VenueMap location={venue.location} />
           </MainContent>
 
           {/* RIGHT SIDE */}
