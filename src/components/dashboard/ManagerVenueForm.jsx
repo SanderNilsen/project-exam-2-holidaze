@@ -16,6 +16,41 @@ const ButtonRow = styled.div`
   flex-wrap: wrap;
 `;
 
+const CheckboxGroup = styled.div`
+  display: grid;
+  gap: 10px;
+`;
+
+const CheckboxTitle = styled.p`
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+`;
+
+const CheckboxGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px 14px;
+
+  @media (max-width: 520px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const CheckboxLabel = styled.label`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text);
+  cursor: pointer;
+`;
+
+const Checkbox = styled.input`
+  margin: 0;
+`;
+
 export default function ManagerVenueForm({
   venueForm,
   formError,
@@ -89,6 +124,56 @@ export default function ManagerVenueForm({
         value={venueForm.country}
         onChange={onChange}
       />
+      
+      <CheckboxGroup>
+        <CheckboxTitle>Facilities</CheckboxTitle>
+
+        <CheckboxGrid>
+          <CheckboxLabel htmlFor="wifi">
+            <Checkbox
+              id="wifi"
+              name="wifi"
+              type="checkbox"
+              checked={venueForm.wifi}
+              onChange={onChange}
+            />
+            Wifi
+          </CheckboxLabel>
+
+          <CheckboxLabel htmlFor="parking">
+            <Checkbox
+              id="parking"
+              name="parking"
+              type="checkbox"
+              checked={venueForm.parking}
+              onChange={onChange}
+            />
+            Parking
+          </CheckboxLabel>
+
+          <CheckboxLabel htmlFor="breakfast">
+            <Checkbox
+              id="breakfast"
+              name="breakfast"
+              type="checkbox"
+              checked={venueForm.breakfast}
+              onChange={onChange}
+            />
+            Breakfast
+          </CheckboxLabel>
+
+          <CheckboxLabel htmlFor="pets">
+            <Checkbox
+              id="pets"
+              name="pets"
+              type="checkbox"
+              checked={venueForm.pets}
+              onChange={onChange}
+            />
+            Pet-friendly
+          </CheckboxLabel>
+        </CheckboxGrid>
+      </CheckboxGroup>
 
       <FormMessage variant="error">{formError}</FormMessage>
 

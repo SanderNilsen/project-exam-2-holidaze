@@ -61,6 +61,10 @@ export default function Manager() {
     mediaUrl: "",
     city: "",
     country: "",
+    wifi: false,
+    parking: false,
+    breakfast: false,
+    pets: false,
   });
 
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
@@ -74,11 +78,11 @@ export default function Manager() {
   }
 
   function handleVenueChange(event) {
-    const { name, value } = event.target;
+    const { name, value, type, checked } = event.target;
 
     setVenueForm((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: type === "checkbox" ? checked : value,
     }));
 
     setFormError("");
@@ -129,6 +133,10 @@ function openEditModal(venue) {
     mediaUrl: venue.media?.[0]?.url || "",
     city: venue.location?.city || "",
     country: venue.location?.country || "",
+    wifi: venue.meta?.wifi || false,
+    parking: venue.meta?.parking || false,
+    breakfast: venue.meta?.breakfast || false,
+    pets: venue.meta?.pets || false,
   });
   setFormError("");
   setIsModalOpen(true);
@@ -173,10 +181,10 @@ async function handleVenueSubmit(event) {
         ]
       : [],
     meta: {
-      wifi: false,
-      parking: false,
-      breakfast: false,
-      pets: false,
+      wifi: venueForm.wifi,
+      parking: venueForm.parking,
+      breakfast: venueForm.breakfast,
+      pets: venueForm.pets,
     },
     location: {
       address: "",
