@@ -160,7 +160,12 @@ async function handleLoadMore() {
     setIsLoadingMore(true);
 
     const nextPage = page + 1;
-    const result = await getVenues({ page: nextPage, limit: 12 });
+    const result = await getVenues({
+      page: nextPage,
+      limit: 12,
+      sort: "created",
+      sortOrder: "desc",
+    });
 
     setVenues((prev) => [...prev, ...result.data]);
     setPage(nextPage);
@@ -178,8 +183,12 @@ async function handleLoadMore() {
         setIsLoading(true);
         setPageError("");
 
-        const result = await getVenues({ page: 1, limit: 12 });
-
+        const result = await getVenues({
+          page: 1,
+          limit: 12,
+          sort: "created",
+          sortOrder: "desc",
+        });
         setVenues(result.data);
         setHasMore(!result.meta.isLastPage);
       } catch (error) {
@@ -260,7 +269,7 @@ async function handleLoadMore() {
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
           >
-            <option value="">Sort by</option>
+            <option value="">Newest</option>
             <option value="priceAsc">Price: Low to High</option>
             <option value="priceDesc">Price: High to Low</option>
             <option value="rating">Rating</option>

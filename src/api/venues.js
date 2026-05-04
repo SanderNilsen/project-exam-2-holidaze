@@ -6,17 +6,24 @@ import { API_BASE_URL } from "./constants";
  * @async
  * @function getVenues
  *
- * @param {Object} [options]
+ * @param {Object} [options] - Query options
  * @param {number} [options.page=1] - Page number to fetch
  * @param {number} [options.limit=12] - Number of venues per page
+ * @param {string} [options.sort="created"] - Field to sort venues by
+ * @param {string} [options.sortOrder="desc"] - Sort direction, either "asc" or "desc"
  *
  * @returns {Promise<{data: Array, meta: Object}>} Returns venues and pagination metadata
  *
  * @throws {Error} Throws an error if the request fails
  */
-export async function getVenues({ page = 1, limit = 12 } = {}) {
+export async function getVenues({
+  page = 1,
+  limit = 12,
+  sort = "created",
+  sortOrder = "desc",
+} = {}) {
   const response = await fetch(
-    `${API_BASE_URL}/holidaze/venues?page=${page}&limit=${limit}`
+    `${API_BASE_URL}/holidaze/venues?page=${page}&limit=${limit}&sort=${sort}&sortOrder=${sortOrder}`
   );
 
   const data = await response.json();
