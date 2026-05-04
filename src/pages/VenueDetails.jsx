@@ -7,6 +7,7 @@ import { formatLocation, getFacilities } from "../utils/venueUtils";
 import InputField from "../components/ui/InputField";
 import PrimaryButton from "../components/ui/PrimaryButton";
 import { createBooking } from "../api/bookings";
+import BookingCalendar from "../components/venues/BookingCalendar";
 
 const PageWrapper = styled.section`
   background: var(--background-light);
@@ -147,6 +148,17 @@ export default function VenueDetails() {
   const [bookingError, setBookingError] = useState("");
   const [bookingSuccess, setBookingSuccess] = useState("");
   const [isBooking, setIsBooking] = useState(false);
+
+  function handleCalendarChange({ dateFrom, dateTo }) {
+  setBookingForm((prev) => ({
+    ...prev,
+    dateFrom,
+    dateTo,
+  }));
+
+  setBookingError("");
+  setBookingSuccess("");
+}
 
   function handleBookingChange(event) {
     const { name, value } = event.target;
@@ -314,30 +326,21 @@ export default function VenueDetails() {
           {/* RIGHT SIDE */}
           <BookingCard>
             <BookingTitle>Book this venue</BookingTitle>
-          {venue.bookings?.length > 0 && (
-            <HelperText>
-              {venue.bookings.length} existing booking(s) for this venue.
-            </HelperText>
-          )}
-            <HelperText>
-              Select your dates and number of guests.
-            </HelperText>
+
+            {venue.bookings?.length > 0 && (
+              <HelperText>
+                {venue.bookings.length} existing booking(s) for this venue.
+              </HelperText>
+            )}
+
+            <HelperText>Select your dates and number of guests.</HelperText>
 
             <BookingForm onSubmit={handleBookingSubmit}>
-              <InputField
-                id="dateFrom"
-                label="Check-in"
-                type="date"
-                value={bookingForm.dateFrom}
-                onChange={handleBookingChange}
-              />
-
-              <InputField
-                id="dateTo"
-                label="Check-out"
-                type="date"
-                value={bookingForm.dateTo}
-                onChange={handleBookingChange}
+              <BookingCalendar
+                bookings={venue.bookings || []}
+                dateFrom={bookingForm.dateFrom}
+                dateTo={bookingForm.dateTo}
+                onChange={handleCalendarChange}
               />
 
               <InputField
