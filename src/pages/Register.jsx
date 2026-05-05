@@ -4,7 +4,8 @@ import InputField from "../components/ui/InputField";
 import PrimaryButton from "../components/ui/PrimaryButton";
 import AuthCard from "../components/ui/AuthCard";
 import FormMessage from "../components/ui/FormMessage";
-import { registerUser } from "../api/auth";
+import { registerUser, loginUser, createApiKey } from "../api/auth";
+import { useNavigate } from "react-router-dom";
 
 const PageWrapper = styled.section`
   background: var(--background-light);
@@ -89,6 +90,8 @@ export default function Register() {
   const [successMessage, setSuccessMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const navigate = useNavigate();
+  
   function handleChange(event) {
     const { name, value, type, checked } = event.target;
 
@@ -128,13 +131,20 @@ export default function Register() {
         venueManager: formData.venueManager,
       });
 
-      setSuccessMessage("Account created successfully.");
-      setFormData({
-        username: "",
-        email: "",
-        password: "",
-        venueManager: false,
+      const loginData = await loginUser({
+        email: formData.email.trim(),
+        password: formData.password,
       });
+
+      const apiKey = await createApiKey(loginData.data.accessToken);
+
+      localStorage.setItem("token", loginData.data.accessToken);
+      localStorage.setItem("apiKey", apiKey);
+      localStorage.setItem("user", JSON.stringify(loginData.data));
+
+      setSuccessMessage("Account created successfully.");
+
+      navigate(formData.venueManager ? "/manager" : "/profile");
     } catch (error) {
       setFormError(error.message || "Something went wrong.");
     } finally {
