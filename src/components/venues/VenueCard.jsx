@@ -14,6 +14,8 @@ const Card = styled.article`
   border-radius: 14px;
   box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  height: 100%;
+  width: 350px;
 
   &:hover {
     transform: translateY(-2px);

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import VenueCard from "../components/venues/VenueCard";
@@ -145,7 +145,12 @@ export default function Home() {
         setIsLoading(true);
         setPageError("");
 
-        const result = await getVenues({ page: 1, limit: 6 });
+        const result = await getVenues({
+          page: 1,
+          limit: 3,
+          sort: "rating",
+          sortOrder: "desc",
+        });
         setVenues(result.data);
       } catch (error) {
         setPageError(error.message || "Something went wrong.");
@@ -156,10 +161,6 @@ export default function Home() {
 
     loadFeaturedVenues();
   }, []);
-
-  const featuredVenues = useMemo(() => {
-    return venues.slice(0, 3);
-  }, [venues]);
 
   function handleProfileClick() {
     if (!user) {
@@ -204,13 +205,13 @@ export default function Home() {
 
         {pageError && <FormMessage variant="error">{pageError}</FormMessage>}
 
-        {!isLoading && !pageError && featuredVenues.length === 0 && (
+        {!isLoading && !pageError && venues.length === 0 && (
           <EmptyText>No featured venues found.</EmptyText>
         )}
 
-        {!isLoading && !pageError && featuredVenues.length > 0 && (
+        {!isLoading && !pageError && venues.length > 0 && (
           <VenueGrid>
-            {featuredVenues.map((venue) => (
+            {venues.map((venue) => (
               <VenueCard
                 key={venue.id}
                 id={venue.id}
