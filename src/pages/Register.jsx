@@ -142,6 +142,8 @@ export default function Register() {
       localStorage.setItem("apiKey", apiKey);
       localStorage.setItem("user", JSON.stringify(loginData.data));
 
+      window.dispatchEvent(new Event("authChanged"));
+
       setSuccessMessage("Account created successfully.");
 
       navigate(formData.venueManager ? "/manager" : "/profile");

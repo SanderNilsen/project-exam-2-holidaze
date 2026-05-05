@@ -133,6 +133,9 @@ function datesOverlap(startA, endA, startB, endB) {
 }
 
 export default function VenueDetails() {
+  const user = JSON.parse(localStorage.getItem("user") || "null");
+  const isVenueManager = user?.venueManager;
+
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -181,6 +184,11 @@ export default function VenueDetails() {
 
     const token = localStorage.getItem("token");
     const apiKey = localStorage.getItem("apiKey");
+
+    if (user?.venueManager) {
+      setBookingError("Venue managers cannot book venues.");
+      return;
+    }
 
     if (!token || !apiKey) {
       setBookingError("You must be logged in to book a venue.");
@@ -327,6 +335,19 @@ export default function VenueDetails() {
           </MainContent>
 
           {/* RIGHT SIDE */}
+        {isVenueManager ? (
+          <BookingCard>
+            <BookingTitle>Manager account</BookingTitle>
+            <HelperText>
+              Venue managers cannot book venues. Use your dashboard to add and manage
+              your own venues.
+            </HelperText>
+
+            <PrimaryButton type="button" onClick={() => navigate("/manager")}>
+              Go to manager dashboard
+            </PrimaryButton>
+          </BookingCard>
+        ) : (
           <BookingCard>
             <BookingTitle>Book this venue</BookingTitle>
 
@@ -364,6 +385,7 @@ export default function VenueDetails() {
               </PrimaryButton>
             </BookingForm>
           </BookingCard>
+        )}
         </DetailsLayout>
       </Container>
     </PageWrapper>
