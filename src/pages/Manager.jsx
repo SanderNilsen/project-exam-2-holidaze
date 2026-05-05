@@ -323,7 +323,7 @@ const upcomingBookings = venueBookings.filter(
       <DashboardShell sidebar={sidebar}>
         <SectionBlock title="My Venues">
           <AddButton type="button" onClick={openModal}>
-            Add new venue
+            + Add new venue
           </AddButton>
           {isLoading && <p>Loading venues...</p>}
 

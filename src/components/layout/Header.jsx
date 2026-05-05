@@ -21,7 +21,7 @@ const TopBar = styled.div`
 `;
 
 const Logo = styled(Link)`
-  font-size: 18px;
+  font-size: 24px;
   font-weight: 700;
   color: var(--primary);
   text-decoration: none;

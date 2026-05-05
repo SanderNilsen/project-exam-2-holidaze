@@ -24,6 +24,11 @@ const ProfileInfo = styled.div`
   display: flex;
   align-items: center;
   gap: 20px;
+
+  @media (max-width: 520px) {
+    align-items: flex-start;
+    gap: 14px;
+  }
 `;
 
 const Avatar = styled.img`
@@ -32,31 +37,46 @@ const Avatar = styled.img`
   border-radius: 50%;
   object-fit: cover;
   background-color: #ffffff;
-  border: 2px solid var(--border);
+  border: 3px solid rgba(255, 255, 255, 0.65);
   flex-shrink: 0;
+
+  @media (max-width: 520px) {
+    width: 72px;
+    height: 72px;
+  }
 `;
 
 const TextGroup = styled.div`
   display: grid;
-  gap: 4px;
+  gap: 6px;
 `;
 
 const Name = styled.h1`
   margin: 0;
   font-size: 32px;
-  font-weight: 600;
+  font-weight: 700;
+  line-height: 1.15;
+
+  @media (max-width: 520px) {
+    font-size: 26px;
+  }
 `;
 
 const Email = styled.p`
   margin: 0;
-  font-size: 16px;
-  opacity: 0.95;
+  font-size: 15px;
+  word-break: break-word;
 `;
 
-const Role = styled.p`
-  margin: 0;
-  font-size: 16px;
-  opacity: 0.95;
+const Role = styled.span`
+  width: fit-content;
+  margin-top: 4px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
 `;
 
 const ActionButton = styled.button`
@@ -72,6 +92,10 @@ const ActionButton = styled.button`
 
   &:hover {
     background: #f8fafc;
+  }
+
+  @media (max-width: 520px) {
+    width: 100%;
   }
 `;
 
