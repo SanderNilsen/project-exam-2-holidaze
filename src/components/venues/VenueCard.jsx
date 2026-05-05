@@ -2,25 +2,23 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 
 const CardLink = styled(Link)`
+  width: 100%;
+  max-width: 360px;
+  height: 100%;
   display: block;
   text-decoration: none;
   color: inherit;
 `;
 
 const Card = styled.article`
+  width: 100%;
+  max-width: 360px;
+  height: 100%;
   overflow: hidden;
   background: var(--background);
   border: 1px solid var(--border);
   border-radius: 14px;
   box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  height: 100%;
-  width: 350px;
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.12);
-  }
 `;
 
 const ImageWrapper = styled.div`
