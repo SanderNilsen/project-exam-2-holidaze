@@ -1,134 +1,313 @@
+# Style Guide
+
 ## Color Palette
 
 ### Primary Colors
 
 **Primary Blue**  
-- Default: Blue 700 – `#1d4ed8`  
-- Hover: Blue 800 – `#1e40af`  
-- Usage: Main branding, primary buttons, navigation links, logo  
+- Default: `#1d4ed8`
+- CSS variable: `var(--primary)`
+- Usage: Main branding, logo, primary buttons, active navigation links, dashboard hero backgrounds
+
+**Primary Blue Hover**  
+- Default: `#1e40af`
+- CSS variable: `var(--primary-hover)`
+- Usage: Hover state for primary buttons and primary interactive elements
 
 **Accent Sky Blue**  
-- Sky 500 – `#0ea5e9`  
-- Usage: Focus states, interactive elements, facility indicators, info highlights  
+- Default: `#0ea5e9`
+- CSS variable: `var(--accent)`
+- Usage: Secondary call-to-action buttons, focus states, selected/focus highlights
 
-### Neutral Colors
+## Neutral Colors
 
 **Background**  
-- White – `#ffffff`  
-- Usage: Main page background, card backgrounds  
+- Default: `#ffffff`
+- CSS variable: `var(--background)`
+- Usage: Main content background, cards, modals, form surfaces
 
-**Slate Background Light**  
-- Slate 50 – `#f8fafc`  
-- Usage: Page backgrounds, input backgrounds  
+**Background Light**  
+- Default: `#f8fafc`
+- CSS variable: `var(--background-light)`
+- Usage: Page backgrounds, section backgrounds, hover states on neutral buttons
 
-**Slate Background Medium**  
-- Slate 100 – `#f1f5f9`  
-- Usage: Secondary surfaces, sections  
+**Background Medium**  
+- Default: `#f1f5f9`
+- Usage: Secondary surfaces, placeholders and subtle section contrast
 
-### Text Colors
+## Text Colors
 
 **Primary Text**  
-- Slate 800 – `#1e293b`  
-- Usage: Headings, primary content  
-
-**Secondary Text**  
-- Slate 600 – `#475569`  
-- Usage: Body text  
+- Default: `#1e293b`
+- CSS variable: `var(--text)`
+- Usage: Headings, main content, strong text
 
 **Muted Text**  
-- Slate 500 – `#64748b`  
-- Usage: Labels, less important text  
+- Default: `#64748b`
+- CSS variable: `var(--text-muted)`
+- Usage: Supporting text, labels, metadata, descriptions
 
 **Placeholder Text**  
-- Slate 400 – `#94a3b8`  
-- Usage: Input placeholders  
+- Default: `#94a3b8`
+- CSS variable: `var(--text-placeholder)`
+- Usage: Input placeholders and low-priority metadata
 
-### Border Colors
+**Text on Dark/Primary Backgrounds**  
+- Default: `#ffffff`
+- Usage: Hero sections, primary buttons, text on dark backgrounds
+
+## Border Colors
 
 **Default Border**  
-- Slate 200 – `#e2e8f0`  
-- Usage: Card borders, input borders, dividers  
+- Default: `#e2e8f0`
+- CSS variable: `var(--border)`
+- Usage: Card borders, input borders, header divider, modal borders, neutral buttons
 
-### Status Colors
+## Status Colors
 
-**Success / Price**  
-- Green 500 – `#22c55e`  
-- Usage: Pricing display, success messages  
+**Price Green**  
+- Default: `#22c55e`
+- Usage: Venue prices
 
-**Error / Destructive**  
-- Red – `#d4183d`  
-- Usage: Error messages, delete actions  
+**Success Message**  
+- Suggested: `#15803d`
+- Usage: Success form messages
+
+**Error / Destructive Red**  
+- Default: `#ef4444`
+- Usage: Cancel buttons, destructive actions
+
+**Error Hover**  
+- Default: `#dc2626`
+- Usage: Hover state for destructive buttons
+
+**Error Background**  
+- Default: `#fef2f2`
+- Usage: Error callouts and unavailable date backgrounds
 
 **Error Text**  
-- White – `#ffffff`  
-- Usage: Text on destructive buttons  
+- Default: `#991b1b`
+- Usage: Error message text and unavailable date text
 
-### Gradient Colors
-
-**Hero Gradient Start**  
-- Slate 900 – `#0f172a`  
-- Usage: Hero background (start)  
-
-**Hero Gradient Middle**  
-- Blue 900 – `#1e3a8a`  
-- Usage: Hero gradient mid tone  
-
-**Hero Gradient End**  
-- Sky 700 – `#0369a1`  
-- Usage: Hero background (end)  
-
-**Subtle Gradient Start**  
-- Slate 100 – `#f1f5f9`  
-- Usage: Image placeholders, loading states  
-
-**Subtle Gradient End**  
-- Slate 200 – `#e2e8f0`  
-- Usage: Image placeholders, loading states  
-
-### Component-Specific Colors
-
-**Input Background**  
-- Slate 50 – `#f8fafc`  
-- Usage: Form inputs  
-
-**Facility Background**  
-- Sky 100 – `#e0f2fe`  
-- Usage: Amenity icons, feature badges  
-
-### Info Box
+## Info Colors
 
 **Info Background**  
-- Sky 50 – `#f0f9ff`  
-- Usage: Information callouts  
+- Default: `#eff6ff`
+- Usage: Register info box and informational callouts
 
 **Info Border**  
-- Sky 200 – `#bae6fd`  
-- Usage: Info box border  
+- Default: `#60a5fa`
+- Usage: Register info box border
 
-**Info Icon**  
-- Sky 500 – `#0ea5e9`  
-- Usage: Icons inside info components
+## Component-Specific Colors
 
-## Typography
+**Hero Background**  
+- Default: `var(--primary)`
+- Usage: Dashboard hero panels, All Venues hero
 
-### Font Family
+**Card Shadow**  
+- Default: `rgba(15, 23, 42, 0.08)`
+- Hover: `rgba(15, 23, 42, 0.12)`
+- Usage: Venue cards
+
+**Unavailable Date Background**  
+- Default: `#fee2e2`
+- Usage: Booked/unavailable dates in booking calendar
+
+# Typography
+
+## Font Family
 
 **Default System Font Stack**
+
 ```css
-font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+  "Helvetica Neue", Arial, sans-serif;
 ```
-### Font Sizes
 
-Based on 16px base size:
-- `--text-xs: 12px` - Small labels, metadata
-- `--text-sm: 14px` - Secondary text
-- `--text-base: 16px` - Body text
-- `--text-lg: 18px` - Emphasized body
-- `--text-xl: 20px` - Section headings
-- `--text-2xl: 24px` - Page subheadings
-- `--text-3xl: 32px` - Main headings
+## Font Sizes
 
-### Font Weights
+The project uses pixel-based font sizes for consistency.
 
-- `--font-weight-normal: 400` - Regular text, body copy
-- `--font-weight-medium: 500` - Headings, labels, buttons, emphasis
+### Common Sizes
+
+- `12px` - Small metadata, facility labels
+- `13px` - Helper text, descriptions inside compact UI
+- `14px` - Navigation links, labels, metadata, secondary text
+- `15px` - Small buttons
+- `16px` - Body text, main buttons, email/role text
+- `18px` - Card titles, prices in compact cards
+- `22px` - Booking card/modal section headings
+- `24px` - Section titles
+- `28px` - Large price display
+- `32px` - Dashboard hero name
+- `36px` - Venue details title / responsive hero title
+- `40px` - Page hero title on All Venues
+- `56px` - Home hero title on desktop
+
+## Font Weights
+
+- `400` - Regular body text
+- `500` - Buttons, card titles, prices
+- `600` - Dashboard hero name, active states
+- `700` - Main hero titles, logo, strong headings
+
+## Typography Usage
+
+**Logo**
+- Size: `24px`
+- Weight: `700`
+- Color: `var(--primary)`
+
+**Navigation**
+- Size: `14px`
+- Active weight: `600`
+- Active color: `var(--primary)`
+
+
+**Section Titles**
+- Size: `24px`
+- Weight: `700`
+- Color: `var(--text)`
+
+**Card Titles**
+- Size: `18px`
+- Weight: `500-700`
+- Color: `var(--text)`
+
+**Body Text**
+- Size: `16px`
+- Weight: `400`
+- Color: `var(--text)`
+
+**Muted Text**
+- Size: `13-14px`
+- Color: `var(--text-muted)`
+
+# Buttons
+
+## Primary Button
+
+Used for main actions such as booking, viewing venues, saving changes and manager actions.
+
+```css
+height: 38px - 44px;
+padding: 0 16px;
+border-radius: 10px;
+border: none;
+background: var(--primary);
+color: #ffffff;
+font-size: 15px - 16px;
+font-weight: 500;
+```
+
+Hover:
+
+```css
+background: var(--primary-hover);
+```
+
+## Secondary Button
+
+Used for cancel/neutral actions inside modals.
+
+```css
+height: 44px;
+padding: 0 16px;
+border-radius: 8px;
+border: 1px solid var(--border);
+background: transparent;
+color: var(--text);
+font-size: 16px;
+```
+
+Hover:
+
+```css
+background: var(--background-light);
+```
+
+## Destructive Button
+
+Used for destructive actions such as cancel booking or delete venue.
+
+```css
+height: 38px;
+padding: 0 16px;
+border-radius: 10px;
+border: none;
+background: #ef4444;
+color: #ffffff;
+font-size: 15px;
+font-weight: 500;
+```
+
+Hover:
+
+```css
+background: #dc2626;
+```
+
+
+# Cards
+
+## Venue Cards
+
+Used on Home and All Venues pages.
+
+```css
+background: var(--background);
+border: 1px solid var(--border);
+border-radius: 14px;
+box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+overflow: hidden;
+```
+
+Hover:
+
+```css
+transform: translateY(-2px);
+box-shadow: 0 8px 18px rgba(15, 23, 42, 0.12);
+```
+
+
+## Dashboard Cards
+
+Used for bookings, manager venues and sidebar cards.
+
+```css
+background: var(--background);
+border: 1px solid var(--border);
+border-radius: 12px - 16px;
+padding: 14px - 22px;
+```
+
+# Layout
+
+## Main Container
+
+Most pages use:
+
+```css
+max-width: 1100px;
+margin: 0 auto;
+padding: 0 16px;
+```
+
+## Responsive Breakpoints
+
+Common breakpoints:
+
+- `1050px` - Venue grid changes from 3 columns to 2 columns
+- `900px` - Venue details layout changes from two columns to one column
+- `768px` - Navigation switches to mobile menu / dashboard cards stack
+- `680px` - Venue grid changes to one column
+- `520px` - Smaller hero/avatar adjustments
+
+# Accessibility Notes
+
+- Buttons should use `type="button"` unless submitting a form.
+- Images should include descriptive `alt` text.
+- Modals should have clear titles and descriptions.
+- Form errors and success messages should be visible near the related form.
+- Interactive elements should have hover and focus states.
