@@ -1,12 +1,12 @@
 # Holidaze
 
-A booking platform built with React, using the Noroff Holidaze API.
+<img src="public/images/desktop-screenshot.png">
 
 ## Overview
 
-Holidaze is a modern booking application where users can browse venues, view venue details, create bookings, and manage their profile. The project also includes a manager dashboard where venue managers can create, update and delete venues, as well as view bookings for venues they manage.
+Holidaze is a booking application where users can browse venues, view venue details, create bookings, and manage their profile. The project also includes a manager dashboard where venue managers can create, update and delete venues, as well as view bookings for venues they manage.
 
-This project was built as part of the Noroff Front-End Development Project Exam 2. The brief required a customer-facing side for booking venues and an admin-facing side for venue managers. The application uses the Noroff Holidaze API.
+This project was built as part of the Noroff Front-End Development Project Exam 2. The [brief](https://content.noroff.dev/project-exam-2/brief.html) required a customer-facing side for booking venues and an admin-facing side for venue managers. The application uses the Noroff Holidaze API.
 
 ## Live Demo
 
