@@ -9,6 +9,7 @@ import PrimaryButton from "../components/ui/PrimaryButton";
 import { createBooking } from "../api/bookings";
 import BookingCalendar from "../components/venues/BookingCalendar";
 import VenueMap from "../components/venues/VenueMap";
+import VenueImageCarousel from "../components/venues/VenueImageCarousel";
 
 const PageWrapper = styled.section`
   background: var(--background-light);
@@ -20,17 +21,6 @@ const Container = styled.div`
   padding: 40px 16px 80px;
   display: grid;
   gap: 32px;
-`;
-
-const HeroImage = styled.img`
-  width: 100%;
-  height: 420px;
-  object-fit: cover;
-  border-radius: 16px;
-
-  @media (max-width: 768px) {
-    height: 260px;
-  }
 `;
 
 const TopSection = styled.section`
@@ -303,11 +293,7 @@ export default function VenueDetails() {
   return (
     <PageWrapper>
       <Container>
-        <HeroImage
-          src={venue?.media?.[0]?.url || "/images/placeholder-venue.svg"}
-          alt={venue?.media?.[0]?.alt || venue?.name}
-        />
-
+        <VenueImageCarousel media={venue.media} title={venue.name} />
         <DetailsLayout>
           {/* LEFT SIDE */}
           <MainContent>
