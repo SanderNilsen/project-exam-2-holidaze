@@ -61,6 +61,8 @@ export default function Manager() {
     mediaUrl: "",
     city: "",
     country: "",
+    lat: "",
+    lng: "",
     wifi: false,
     parking: false,
     breakfast: false,
@@ -113,6 +115,12 @@ export default function Manager() {
       mediaUrl: "",
       city: "",
       country: "",
+      lat: "",
+      lng: "",
+      wifi: false,
+      parking: false,
+      breakfast: false,
+      pets: false,
     });
     setFormError("");
     setIsModalOpen(true);
@@ -137,6 +145,8 @@ function openEditModal(venue) {
     parking: venue.meta?.parking || false,
     breakfast: venue.meta?.breakfast || false,
     pets: venue.meta?.pets || false,
+    lat: venue.location?.lat || "",
+    lng: venue.location?.lng || "",
   });
   setFormError("");
   setIsModalOpen(true);
@@ -192,8 +202,8 @@ async function handleVenueSubmit(event) {
       zip: "",
       country: venueForm.country.trim(),
       continent: "",
-      lat: 0,
-      lng: 0,
+      lat: venueForm.lat ? Number(venueForm.lat) : 0,
+      lng: venueForm.lng ? Number(venueForm.lng) : 0,
     },
   };
 

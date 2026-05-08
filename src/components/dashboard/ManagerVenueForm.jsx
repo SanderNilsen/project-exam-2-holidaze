@@ -124,7 +124,25 @@ export default function ManagerVenueForm({
         value={venueForm.country}
         onChange={onChange}
       />
-      
+
+      <InputField
+        id="lat"
+        label="Latitude"
+        type="number"
+        placeholder="59.9139"
+        value={venueForm.lat}
+        onChange={onChange}
+      />
+
+      <InputField
+        id="lng"
+        label="Longitude"
+        type="number"
+        placeholder="10.7522"
+        value={venueForm.lng}
+        onChange={onChange}
+      />
+
       <CheckboxGroup>
         <CheckboxTitle>Facilities</CheckboxTitle>
 
