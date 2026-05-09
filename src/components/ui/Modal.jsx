@@ -8,6 +8,7 @@ const Overlay = styled.div`
   place-items: center;
   padding: 16px;
   z-index: 1000;
+  overflow-y: auto;
 `;
 
 const Modal = styled.div`
