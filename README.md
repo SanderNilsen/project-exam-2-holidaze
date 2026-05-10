@@ -93,23 +93,12 @@ src/
   api/
     auth.js
     bookings.js
+    client.js
     constants.js
     profile.js
     venues.js
 
   components/
-    dashboard/
-      AvatarModal.jsx
-      BookingCard.jsx
-      DashboardShell.jsx
-      HeroPanel.jsx
-      ManagerVenueCard.jsx
-      ManagerVenueForm.jsx
-      ProfileVenueCard.jsx
-      SectionBlock.jsx
-      SidebarCard.jsx
-      SidebarElements.jsx
-
     layout/
       Footer.jsx
       Header.jsx
@@ -128,10 +117,25 @@ src/
       PrimaryButton.jsx
       SecondaryButton.jsx
 
+  features/
+    dashboard/
+      AvatarModal.jsx
+      BookingCard.jsx
+      DashboardShell.jsx
+      HeroPanel.jsx
+      ManagerVenueCard.jsx
+      ManagerVenueForm.jsx
+      ProfileVenueCard.jsx
+      SectionBlock.jsx
+      SidebarCard.jsx
+      SidebarElements.jsx
+
     venues/
       BookingCalendar.jsx
+      VenueBookingPanel.jsx
       VenueCard.jsx
       VenueImageCarousel.jsx
+      VenueInfo.jsx
       VenueMap.jsx
 
   pages/
@@ -147,6 +151,8 @@ src/
     GlobalStyle.js
 
   utils/
+    dateUtils.js
+    venueFormMapper.js
     venueUtils.js
 ```
 
