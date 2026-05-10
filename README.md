@@ -6,18 +6,16 @@
 
 Holidaze is a booking application where users can browse venues, view venue details, create bookings, and manage their profile. The project also includes a manager dashboard where venue managers can create, update and delete venues, as well as view bookings for venues they manage.
 
-This project was built as part of the Noroff Front-End Development Project Exam 2. The [brief](https://content.noroff.dev/project-exam-2/brief.html) required a customer-facing side for booking venues and an admin-facing side for venue managers. The application uses the Noroff Holidaze API.
-
-## Live Demo
-
-[Netlify - Holidaze](https://holidaze-react.netlify.app/)
+This project was built as part of the Noroff Front-End Development Project Exam 2. The [brief](https://content.noroff.dev/project-exam-2/brief.html) required a customer-facing side for booking venues and an admin-facing side for venue managers. The application uses the [Noroff Holidaze API](https://docs.noroff.dev/docs/v2/holidaze/bookings).
 
 ## Design and Planning
 
-- [Prototype & Wireframe](https://www.figma.com/design/cplx77RmZD3eRYPOvaWFPV/Project-Exam-2---Holidaze?node-id=0-1&t=dWNel3OefZMtbjCj-1)
+- [Gantt Chart](https://github.com/users/SanderNilsen/projects/5/views/4?sortedBy%5Bdirection%5D=asc&sortedBy%5BcolumnId%5D=255978628)
+- [Design Prototype](https://www.figma.com/design/cplx77RmZD3eRYPOvaWFPV/Project-Exam-2---Holidaze?node-id=0-1&t=dWNel3OefZMtbjCj-1)
 - [Style Guide](https://www.figma.com/design/cplx77RmZD3eRYPOvaWFPV/Project-Exam-2---Holidaze?node-id=1-3&t=0fi7FotdZnMf9hAK-1)
 - [Kanban Board](https://github.com/users/SanderNilsen/projects/5/views/1)
-- [Roadmap / Gantt](https://github.com/users/SanderNilsen/projects/5/views/4?sortedBy%5Bdirection%5D=asc&sortedBy%5BcolumnId%5D=255978628)
+- [Repository](https://github.com/SanderNilsen/project-exam-2-holidaze)
+- [Hosted Demo](https://holidaze-react.netlify.app/)
 
 ## Features
 
@@ -75,9 +73,6 @@ This project was built as part of the Noroff Front-End Development Project Exam 
 - Reusable component structure
 - Styled Components for styling
 - Shared dashboard layout for Profile and Manager pages
-- Reusable modal component
-- Reusable form and button components
-- Placeholder images for missing media
 - User feedback through loading, error and success messages
 
 ## Tech Stack
@@ -136,6 +131,7 @@ src/
     venues/
       BookingCalendar.jsx
       VenueCard.jsx
+      VenueImageCarousel.jsx
       VenueMap.jsx
 
   pages/
@@ -156,7 +152,7 @@ src/
 
 ## API
 
-This project uses the Noroff Holidaze API.
+This project uses the [Noroff Holidaze API](https://docs.noroff.dev/docs/v2/holidaze/bookings).
 
 Main API resources used:
 
@@ -220,12 +216,8 @@ http://localhost:3000
 
 ## Environment / API Key
 
-No manual `.env` setup is required for the current version.
+No manual `.env` setup is required for this project.
 
-The API key is created after login/register using the Noroff API and stored in `localStorage` together with the access token and user data.
+Authenticated requests use a JWT access token and a Noroff API key. Both are created through the Noroff API after login or registration and are stored in `localStorage` for the current session.
 
-```js
-localStorage.setItem("token", accessToken);
-localStorage.setItem("apiKey", apiKey);
-localStorage.setItem("user", JSON.stringify(user));
-```
+This allows the application to make authenticated requests such as creating bookings, updating profiles, and managing venues.
