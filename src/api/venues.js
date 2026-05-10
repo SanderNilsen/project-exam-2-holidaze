@@ -48,7 +48,7 @@ export async function getVenues({
  */
 export async function getVenueById(id) {
   const response = await fetch(
-    `${API_BASE_URL}/holidaze/venues/${id}?_bookings=true`
+`${API_BASE_URL}/holidaze/venues/${id}?_bookings=true&_owner=true`
   );
 
   const data = await response.json();

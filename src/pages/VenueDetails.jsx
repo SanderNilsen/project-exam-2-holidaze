@@ -23,11 +23,6 @@ const Container = styled.div`
   gap: 32px;
 `;
 
-const TopSection = styled.section`
-  display: grid;
-  gap: 12px;
-`;
-
 const Title = styled.h1`
   margin: 0;
   font-size: 36px;
@@ -54,12 +49,6 @@ const Description = styled.p`
   font-size: 16px;
   line-height: 1.7;
   color: var(--text);
-`;
-
-const Facilities = styled.div`
-  display: flex;
-  gap: 14px;
-  flex-wrap: wrap;
 `;
 
 const Facility = styled.span`
@@ -99,6 +88,12 @@ const BookingCard = styled.aside`
   padding: 22px;
   display: grid;
   gap: 18px;
+  position: sticky;
+  top: 90px;
+
+  @media (max-width: 900px) {
+    position: static;
+  }
 `;
 
 const BookingTitle = styled.h2`
@@ -116,6 +111,93 @@ const HelperText = styled.p`
   margin: 0;
   font-size: 13px;
   color: var(--text-muted);
+`;
+
+const HostCard = styled.div`
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  width: fit-content;
+  padding: 12px 14px;
+  background: var(--background-light);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+`;
+
+const HostAvatar = styled.img`
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #ffffff;
+  border: 1px solid var(--border);
+`;
+
+const HostInfo = styled.div`
+  display: grid;
+  gap: 3px;
+`;
+
+const HostLabel = styled.p`
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-muted);
+`;
+
+const HostName = styled.p`
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+`;
+
+const InfoCard = styled.section`
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 22px;
+  display: grid;
+  gap: 18px;
+`;
+
+const SectionHeading = styled.h2`
+  margin: 0;
+  font-size: 22px;
+  color: var(--text);
+`;
+
+const TitleRow = styled.div`
+  display: grid;
+  gap: 12px;
+`;
+
+const VenueHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+`;
+
+const PriceBlock = styled.div`
+  display: grid;
+  justify-items: end;
+  gap: 2px;
+
+  @media (max-width: 640px) {
+    justify-items: start;
+  }
+`;
+
+const PriceUnit = styled.span`
+  font-size: 16px;
+  font-weight: 500;
+`;
+
+const FacilityList = styled.div`
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
 `;
 
 function datesOverlap(startA, endA, startB, endB) {
@@ -297,27 +379,63 @@ export default function VenueDetails() {
         <DetailsLayout>
           {/* LEFT SIDE */}
           <MainContent>
-            <TopSection>
-              <Title>{venue.name}</Title>
+            <InfoCard>
+              <VenueHeader>
+                <TitleRow>
+                  <Title>{venue.name}</Title>
 
-              <MetaRow>
-                <span>{formatLocation(venue.location)}</span>
-                <span>{venue.maxGuests} guests</span>
-                <span>{venue.rating} ⭐</span>
-              </MetaRow>
+                  <MetaRow>
+                    <span>{formatLocation(venue.location)}</span>
+                    <span>{venue.maxGuests} guests</span>
+                    <span>{venue.rating} ⭐</span>
+                  </MetaRow>
+                </TitleRow>
 
-              <Price>${venue.price}/night</Price>
-            </TopSection>
+                <PriceBlock>
+                  <Price>
+                    ${venue.price}
+                    <PriceUnit>/night</PriceUnit>
+                  </Price>
+                </PriceBlock>
+              </VenueHeader>
 
-            <Description>{venue.description}</Description>
+              {venue.owner && (
+                <HostCard>
+                  <HostAvatar
+                    src={venue.owner.avatar?.url || "/images/avatar-placeholder.svg"}
+                    alt={`${venue.owner.name} avatar`}
+                  />
 
-            <Facilities>
-              {getFacilities(venue.meta).map((item) => (
-                <Facility key={item}>{item}</Facility>
-              ))}
-            </Facilities>
+                  <HostInfo>
+                    <HostLabel>Hosted by</HostLabel>
+                    <HostName>{venue.owner.name}</HostName>
+                  </HostInfo>
+                </HostCard>
+              )}
+            </InfoCard>
 
-            <VenueMap location={venue.location} />
+            <InfoCard>
+              <SectionHeading>Description</SectionHeading>
+              <Description>{venue.description}</Description>
+            </InfoCard>
+
+            <InfoCard>
+              <SectionHeading>Facilities</SectionHeading>
+
+              <FacilityList>
+                {getFacilities(venue.meta).length > 0 ? (
+                  getFacilities(venue.meta).map((item) => (
+                    <Facility key={item}>{item}</Facility>
+                  ))
+                ) : (
+                  <HelperText>No facilities listed.</HelperText>
+                )}
+              </FacilityList>
+            </InfoCard>
+
+            <InfoCard>
+              <VenueMap location={venue.location} />
+            </InfoCard>
           </MainContent>
 
           {/* RIGHT SIDE */}
