@@ -36,6 +36,15 @@ const DetailsLayout = styled.div`
   }
 `;
 
+/**
+ * Checks whether two booking date ranges overlap.
+ *
+ * @param {Date} startA - Start date for the selected range.
+ * @param {Date} endA - End date for the selected range.
+ * @param {Date} startB - Start date for an existing booking.
+ * @param {Date} endB - End date for an existing booking.
+ * @returns {boolean} True when the ranges overlap.
+ */
 function datesOverlap(startA, endA, startB, endB) {
   return startA < endB && startB < endA;
 }
@@ -84,6 +93,12 @@ export default function VenueDetails() {
     setBookingSuccess("");
   }
 
+  /**
+   * Validates the booking form, prevents unavailable ranges, and creates a booking.
+   *
+   * @param {React.FormEvent<HTMLFormElement>} event - Booking form submit event.
+   * @returns {Promise<void>}
+   */
   async function handleBookingSubmit(event) {
     event.preventDefault();
 

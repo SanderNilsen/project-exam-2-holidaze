@@ -1,3 +1,8 @@
+/**
+ * Creates the default state object used by the venue create/edit form.
+ *
+ * @returns {Object} Empty venue form values.
+ */
 export function createEmptyVenueForm() {
   return {
     name: "",
@@ -16,6 +21,12 @@ export function createEmptyVenueForm() {
   };
 }
 
+/**
+ * Maps a venue from the API into the flat form shape used by ManagerVenueForm.
+ *
+ * @param {Object} venue - Venue data returned from the Holidaze API.
+ * @returns {Object} Venue form values ready for editing.
+ */
 export function mapVenueToForm(venue) {
   return {
     name: venue.name || "",
@@ -34,6 +45,12 @@ export function mapVenueToForm(venue) {
   };
 }
 
+/**
+ * Validates required venue form fields before create or update requests.
+ *
+ * @param {Object} venueForm - Current venue form values.
+ * @returns {string} Error message when invalid, otherwise an empty string.
+ */
 export function validateVenueForm(venueForm) {
   if (!venueForm.name.trim()) {
     return "Venue name is required.";
@@ -54,6 +71,12 @@ export function validateVenueForm(venueForm) {
   return "";
 }
 
+/**
+ * Converts editable venue form state into the payload expected by the API.
+ *
+ * @param {Object} venueForm - Current venue form values.
+ * @returns {Object} API-ready venue payload.
+ */
 export function mapVenueFormToPayload(venueForm) {
   const name = venueForm.name.trim();
 

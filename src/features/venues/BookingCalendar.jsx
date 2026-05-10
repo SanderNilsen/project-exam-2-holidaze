@@ -61,6 +61,12 @@ const Dot = styled.span`
     $variant === "booked" ? "#ef4444" : "var(--primary)"};
 `;
 
+/**
+ * Formats a Date object as YYYY-MM-DD for controlled calendar state.
+ *
+ * @param {Date} date - Selected calendar date.
+ * @returns {string} Local date string used by booking form state.
+ */
 function formatDateForState(date) {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -69,6 +75,12 @@ function formatDateForState(date) {
   return `${year}-${month}-${day}`;
 }
 
+/**
+ * Creates a local Date from a YYYY-MM-DD string without UTC timezone shifting.
+ *
+ * @param {string} dateString - Date string from booking form state.
+ * @returns {Date|undefined} Local Date instance or undefined when empty.
+ */
 function createLocalDate(dateString) {
   if (!dateString) return undefined;
 
@@ -76,6 +88,12 @@ function createLocalDate(dateString) {
   return new Date(year, month - 1, day);
 }
 
+/**
+ * Converts API booking dates into DayPicker date ranges.
+ *
+ * @param {Array<Object>} bookings - Existing venue bookings from the API.
+ * @returns {Array<{from: Date, to: Date}>} Ranges used for disabled/booked days.
+ */
 function getBookedRanges(bookings) {
   return bookings.map((booking) => ({
     from: new Date(booking.dateFrom),
@@ -83,6 +101,16 @@ function getBookedRanges(bookings) {
   }));
 }
 
+/**
+ * Renders a range calendar that blocks past dates and existing bookings.
+ *
+ * @param {Object} props - Component props.
+ * @param {Array<Object>} [props.bookings=[]] - Existing venue bookings.
+ * @param {string} props.dateFrom - Selected check-in date.
+ * @param {string} props.dateTo - Selected check-out date.
+ * @param {Function} props.onChange - Receives updated dateFrom/dateTo values.
+ * @returns {JSX.Element} Booking calendar UI.
+ */
 export default function BookingCalendar({
   bookings = [],
   dateFrom,
