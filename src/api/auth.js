@@ -1,4 +1,5 @@
 import { API_BASE_URL } from "./constants";
+import { jsonHeaders, parseJsonOrThrow } from "./client";
 
 /**
  * Registers a new user with the Noroff API.
@@ -27,9 +28,7 @@ import { API_BASE_URL } from "./constants";
 export async function registerUser({ name, email, password, venueManager }) {
   const response = await fetch(`${API_BASE_URL}/auth/register`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: jsonHeaders(),
     body: JSON.stringify({
       name,
       email,
@@ -38,11 +37,7 @@ export async function registerUser({ name, email, password, venueManager }) {
     }),
   });
 
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data?.errors?.[0]?.message || "Registration failed.");
-  }
+  const data = await parseJsonOrThrow(response, "Registration failed.");
 
   return data;
 }
@@ -74,9 +69,7 @@ export async function loginUser({ email, password }) {
     `${API_BASE_URL}/auth/login?_holidaze=true`,
     {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: jsonHeaders(),
       body: JSON.stringify({
         email,
         password,
@@ -84,11 +77,7 @@ export async function loginUser({ email, password }) {
     }
   );
 
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data?.errors?.[0]?.message || "Login failed.");
-  }
+  const data = await parseJsonOrThrow(response, "Login failed.");
 
   return data;
 }
@@ -118,11 +107,7 @@ export async function createApiKey(token) {
     },
   });
 
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data?.errors?.[0]?.message || "Failed to create API key.");
-  }
+  const data = await parseJsonOrThrow(response, "Failed to create API key.");
 
   return data.data.key;
 }

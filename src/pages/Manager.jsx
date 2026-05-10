@@ -12,7 +12,14 @@ import FormMessage from "../components/ui/FormMessage";
 import AvatarModal from "../components/dashboard/AvatarModal";
 import { getProfileVenues } from "../api/profile";
 import { createVenue, updateVenue, deleteVenue } from "../api/venues";
+import { formatDisplayDate } from "../utils/dateUtils";
 import { formatLocation } from "../utils/venueUtils";
+import {
+  createEmptyVenueForm,
+  mapVenueFormToPayload,
+  mapVenueToForm,
+  validateVenueForm,
+} from "../utils/venueFormMapper";
 import {
   MenuList,
   MenuItem,
@@ -53,21 +60,7 @@ export default function Manager() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [editingVenue, setEditingVenue] = useState(null);
 
-  const [venueForm, setVenueForm] = useState({
-    name: "",
-    description: "",
-    price: "",
-    maxGuests: "",
-    mediaUrl: "",
-    city: "",
-    country: "",
-    lat: "",
-    lng: "",
-    wifi: false,
-    parking: false,
-    breakfast: false,
-    pets: false,
-  });
+  const [venueForm, setVenueForm] = useState(createEmptyVenueForm);
 
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
 
@@ -107,21 +100,7 @@ export default function Manager() {
 
   function openModal() {
     setEditingVenue(null);
-    setVenueForm({
-      name: "",
-      description: "",
-      price: "",
-      maxGuests: "",
-      mediaUrl: "",
-      city: "",
-      country: "",
-      lat: "",
-      lng: "",
-      wifi: false,
-      parking: false,
-      breakfast: false,
-      pets: false,
-    });
+    setVenueForm(createEmptyVenueForm());
     setFormError("");
     setIsModalOpen(true);
   }
@@ -131,117 +110,62 @@ export default function Manager() {
     setFormError("");
   }
 
-function openEditModal(venue) {
-  setEditingVenue(venue);
-  setVenueForm({
-    name: venue.name || "",
-    description: venue.description || "",
-    price: venue.price || "",
-    maxGuests: venue.maxGuests || "",
-    mediaUrl: venue.media?.[0]?.url || "",
-    city: venue.location?.city || "",
-    country: venue.location?.country || "",
-    wifi: venue.meta?.wifi || false,
-    parking: venue.meta?.parking || false,
-    breakfast: venue.meta?.breakfast || false,
-    pets: venue.meta?.pets || false,
-    lat: venue.location?.lat || "",
-    lng: venue.location?.lng || "",
-  });
-  setFormError("");
-  setIsModalOpen(true);
-}
-
-async function handleVenueSubmit(event) {
-  event.preventDefault();
-
-  setFormError("");
-
-  if (!venueForm.name.trim()) {
-    setFormError("Venue name is required.");
-    return;
+  function openEditModal(venue) {
+    setEditingVenue(venue);
+    setVenueForm(mapVenueToForm(venue));
+    setFormError("");
+    setIsModalOpen(true);
   }
 
-  if (!venueForm.description.trim()) {
-    setFormError("Description is required.");
-    return;
-  }
+  async function handleVenueSubmit(event) {
+    event.preventDefault();
 
-  if (!venueForm.price || Number(venueForm.price) < 1) {
-    setFormError("Price must be at least 1.");
-    return;
-  }
+    setFormError("");
 
-  if (!venueForm.maxGuests || Number(venueForm.maxGuests) < 1) {
-    setFormError("Max guests must be at least 1.");
-    return;
-  }
+    const validationError = validateVenueForm(venueForm);
 
-  const venuePayload = {
-    name: venueForm.name.trim(),
-    description: venueForm.description.trim(),
-    price: Number(venueForm.price),
-    maxGuests: Number(venueForm.maxGuests),
-    media: venueForm.mediaUrl.trim()
-      ? [
-          {
-            url: venueForm.mediaUrl.trim(),
-            alt: venueForm.name.trim(),
-          },
-        ]
-      : [],
-    meta: {
-      wifi: venueForm.wifi,
-      parking: venueForm.parking,
-      breakfast: venueForm.breakfast,
-      pets: venueForm.pets,
-    },
-    location: {
-      address: "",
-      city: venueForm.city.trim(),
-      zip: "",
-      country: venueForm.country.trim(),
-      continent: "",
-      lat: venueForm.lat ? Number(venueForm.lat) : 0,
-      lng: venueForm.lng ? Number(venueForm.lng) : 0,
-    },
-  };
-
-  try {
-    setIsSubmitting(true);
-
-    if (editingVenue) {
-      const updatedVenue = await updateVenue({
-        id: editingVenue.id,
-        token,
-        apiKey,
-        venue: venuePayload,
-      });
-
-      setVenues((prev) =>
-        prev.map((venue) =>
-          venue.id === updatedVenue.id
-            ? { ...updatedVenue, bookings: venue.bookings || [] }
-            : venue
-        )
-      );
-    } else {
-      const newVenue = await createVenue({
-        token,
-        apiKey,
-        venue: venuePayload,
-      });
-
-      setVenues((prev) => [{ ...newVenue, bookings: [] }, ...prev]);
+    if (validationError) {
+      setFormError(validationError);
+      return;
     }
 
-    closeModal();
-  } catch (error) {
-    setFormError(error.message || "Something went wrong.");
-  } finally {
-    setIsSubmitting(false);
+    const venuePayload = mapVenueFormToPayload(venueForm);
+
+    try {
+      setIsSubmitting(true);
+
+      if (editingVenue) {
+        const updatedVenue = await updateVenue({
+          id: editingVenue.id,
+          token,
+          apiKey,
+          venue: venuePayload,
+        });
+
+        setVenues((prev) =>
+          prev.map((venue) =>
+            venue.id === updatedVenue.id
+              ? { ...updatedVenue, bookings: venue.bookings || [] }
+              : venue
+          )
+        );
+      } else {
+        const newVenue = await createVenue({
+          token,
+          apiKey,
+          venue: venuePayload,
+        });
+
+        setVenues((prev) => [{ ...newVenue, bookings: [] }, ...prev]);
+      }
+
+      closeModal();
+    } catch (error) {
+      setFormError(error.message || "Something went wrong.");
+    } finally {
+      setIsSubmitting(false);
+    }
   }
-}
 
   useEffect(() => {
     async function loadManagerVenues() {
@@ -274,16 +198,16 @@ async function handleVenueSubmit(event) {
     return total + (venue.bookings?.length || 0);
   }, 0);
 
-const venueBookings = venues.flatMap((venue) =>
-  (venue.bookings || []).map((booking) => ({
-    ...booking,
-    venueTitle: venue.name,
-  }))
-);
+  const venueBookings = venues.flatMap((venue) =>
+    (venue.bookings || []).map((booking) => ({
+      ...booking,
+      venueTitle: venue.name,
+    }))
+  );
 
-const upcomingBookings = venueBookings.filter(
-  (booking) => new Date(booking.dateFrom) >= new Date()
-);
+  const upcomingBookings = venueBookings.filter(
+    (booking) => new Date(booking.dateFrom) >= new Date()
+  );
 
   const sidebar = (
     <>
@@ -370,16 +294,8 @@ const upcomingBookings = venueBookings.filter(
                 key={booking.id}
                 guestName={booking.customer?.name || "Guest"}
                 venueTitle={booking.venueTitle}
-                checkIn={new Date(booking.dateFrom).toLocaleDateString("en-GB", {
-                  day: "2-digit",
-                  month: "short",
-                  year: "numeric",
-                })}
-                checkOut={new Date(booking.dateTo).toLocaleDateString("en-GB", {
-                  day: "2-digit",
-                  month: "short",
-                  year: "numeric",
-                })}
+                checkIn={formatDisplayDate(booking.dateFrom)}
+                checkOut={formatDisplayDate(booking.dateTo)}
                 guests={booking.guests}
                 avatarUrl={booking.customer?.avatar?.url}
               />

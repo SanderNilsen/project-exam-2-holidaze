@@ -1,4 +1,10 @@
 import { API_BASE_URL } from "./constants";
+import {
+  authHeaders,
+  authJsonHeaders,
+  parseJsonOrThrow,
+  throwIfResponseError,
+} from "./client";
 
 /**
  * Fetches a paginated list of venues from the API.
@@ -26,11 +32,7 @@ export async function getVenues({
     `${API_BASE_URL}/holidaze/venues?page=${page}&limit=${limit}&sort=${sort}&sortOrder=${sortOrder}`
   );
 
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data?.errors?.[0]?.message || "Failed to fetch venues.");
-  }
+  const data = await parseJsonOrThrow(response, "Failed to fetch venues.");
 
   return data;
 }
@@ -48,14 +50,10 @@ export async function getVenues({
  */
 export async function getVenueById(id) {
   const response = await fetch(
-`${API_BASE_URL}/holidaze/venues/${id}?_bookings=true&_owner=true`
+    `${API_BASE_URL}/holidaze/venues/${id}?_bookings=true&_owner=true`
   );
 
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data?.errors?.[0]?.message || "Failed to fetch venue.");
-  }
+  const data = await parseJsonOrThrow(response, "Failed to fetch venue.");
 
   return data.data;
 }
@@ -78,19 +76,11 @@ export async function getVenueById(id) {
 export async function createVenue({ token, apiKey, venue }) {
   const response = await fetch(`${API_BASE_URL}/holidaze/venues`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-      "X-Noroff-API-Key": apiKey,
-    },
+    headers: authJsonHeaders(token, apiKey),
     body: JSON.stringify(venue),
   });
 
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data?.errors?.[0]?.message || "Failed to create venue.");
-  }
+  const data = await parseJsonOrThrow(response, "Failed to create venue.");
 
   return data.data;
 }
@@ -114,19 +104,11 @@ export async function createVenue({ token, apiKey, venue }) {
 export async function updateVenue({ id, token, apiKey, venue }) {
   const response = await fetch(`${API_BASE_URL}/holidaze/venues/${id}`, {
     method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-      "X-Noroff-API-Key": apiKey,
-    },
+    headers: authJsonHeaders(token, apiKey),
     body: JSON.stringify(venue),
   });
 
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data?.errors?.[0]?.message || "Failed to update venue.");
-  }
+  const data = await parseJsonOrThrow(response, "Failed to update venue.");
 
   return data.data;
 }
@@ -149,14 +131,8 @@ export async function updateVenue({ id, token, apiKey, venue }) {
 export async function deleteVenue({ id, token, apiKey }) {
   const response = await fetch(`${API_BASE_URL}/holidaze/venues/${id}`, {
     method: "DELETE",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "X-Noroff-API-Key": apiKey,
-    },
+    headers: authHeaders(token, apiKey),
   });
 
-  if (!response.ok) {
-    const data = await response.json();
-    throw new Error(data?.errors?.[0]?.message || "Failed to delete venue.");
-  }
+  await throwIfResponseError(response, "Failed to delete venue.");
 }

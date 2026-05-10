@@ -10,6 +10,7 @@ import AvatarModal from "../components/dashboard/AvatarModal";
 import FormMessage from "../components/ui/FormMessage";
 import { getProfileBookings } from "../api/profile";
 import { deleteBooking } from "../api/bookings";
+import { formatDisplayDate } from "../utils/dateUtils";
 import {
   MenuList,
   MenuItem,
@@ -25,14 +26,6 @@ const EmptyText = styled.p`
   color: var(--text-muted);
   font-size: 14px;
 `;
-
-function formatDate(dateString) {
-  return new Date(dateString).toLocaleDateString("en-GB", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  });
-}
 
 function getBookingLocation(venue) {
   const city = venue?.location?.city;
@@ -184,8 +177,8 @@ export default function Profile() {
                 key={booking.id}
                 title={booking.venue?.name || "Venue"}
                 location={getBookingLocation(booking.venue)}
-                checkIn={formatDate(booking.dateFrom)}
-                checkOut={formatDate(booking.dateTo)}
+                checkIn={formatDisplayDate(booking.dateFrom)}
+                checkOut={formatDisplayDate(booking.dateTo)}
                 price={
                   booking.venue?.price
                     ? `$${booking.venue.price}/night`
@@ -213,8 +206,8 @@ export default function Profile() {
                 key={booking.id}
                 title={booking.venue?.name || "Venue"}
                 location={getBookingLocation(booking.venue)}
-                checkIn={formatDate(booking.dateFrom)}
-                checkOut={formatDate(booking.dateTo)}
+                checkIn={formatDisplayDate(booking.dateFrom)}
+                checkOut={formatDisplayDate(booking.dateTo)}
                 price={
                   booking.venue?.price
                     ? `$${booking.venue.price}/night`

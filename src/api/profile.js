@@ -1,4 +1,5 @@
 import { API_BASE_URL } from "./constants";
+import { authHeaders, authJsonHeaders, parseJsonOrThrow } from "./client";
 
 /**
  * Updates the avatar for a user profile using the Noroff Holidaze API.
@@ -28,11 +29,7 @@ import { API_BASE_URL } from "./constants";
 export async function updateAvatar({ name, token, apiKey, avatarUrl, alt }) {
   const response = await fetch(`${API_BASE_URL}/holidaze/profiles/${name}`, {
     method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-      "X-Noroff-API-Key": apiKey,
-    },
+    headers: authJsonHeaders(token, apiKey),
     body: JSON.stringify({
       avatar: {
         url: avatarUrl,
@@ -41,11 +38,7 @@ export async function updateAvatar({ name, token, apiKey, avatarUrl, alt }) {
     }),
   });
 
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data?.errors?.[0]?.message || "Failed to update avatar.");
-  }
+  const data = await parseJsonOrThrow(response, "Failed to update avatar.");
 
   return data.data;
 }
@@ -64,18 +57,11 @@ export async function getProfileBookings({ name, token, apiKey }) {
     `${API_BASE_URL}/holidaze/profiles/${name}?_bookings=true`,
     {
       method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "X-Noroff-API-Key": apiKey,
-      },
+      headers: authHeaders(token, apiKey),
     }
   );
 
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data?.errors?.[0]?.message || "Failed to fetch bookings.");
-  }
+  const data = await parseJsonOrThrow(response, "Failed to fetch bookings.");
 
   return data.data;
 }
@@ -100,18 +86,11 @@ export async function getProfileVenues({ name, token, apiKey }) {
     `${API_BASE_URL}/holidaze/profiles/${name}/venues?_bookings=true`,
     {
       method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "X-Noroff-API-Key": apiKey,
-      },
+      headers: authHeaders(token, apiKey),
     }
   );
 
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data?.errors?.[0]?.message || "Failed to fetch venues.");
-  }
+  const data = await parseJsonOrThrow(response, "Failed to fetch venues.");
 
   return data.data;
 }

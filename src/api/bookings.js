@@ -1,4 +1,10 @@
 import { API_BASE_URL } from "./constants";
+import {
+  authHeaders,
+  authJsonHeaders,
+  parseJsonOrThrow,
+  throwIfResponseError,
+} from "./client";
 
 /**
  * Creates a new booking for a venue.
@@ -28,11 +34,7 @@ export async function createBooking({
 }) {
   const response = await fetch(`${API_BASE_URL}/holidaze/bookings`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-      "X-Noroff-API-Key": apiKey,
-    },
+    headers: authJsonHeaders(token, apiKey),
     body: JSON.stringify({
       dateFrom,
       dateTo,
@@ -41,11 +43,7 @@ export async function createBooking({
     }),
   });
 
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data?.errors?.[0]?.message || "Failed to create booking.");
-  }
+  const data = await parseJsonOrThrow(response, "Failed to create booking.");
 
   return data.data;
 }
@@ -68,14 +66,8 @@ export async function createBooking({
 export async function deleteBooking({ id, token, apiKey }) {
   const response = await fetch(`${API_BASE_URL}/holidaze/bookings/${id}`, {
     method: "DELETE",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "X-Noroff-API-Key": apiKey,
-    },
+    headers: authHeaders(token, apiKey),
   });
 
-  if (!response.ok) {
-    const data = await response.json();
-    throw new Error(data?.errors?.[0]?.message || "Failed to cancel booking.");
-  }
+  await throwIfResponseError(response, "Failed to cancel booking.");
 }
