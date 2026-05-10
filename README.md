@@ -11,8 +11,9 @@ This project was built as part of the Noroff Front-End Development Project Exam 
 ## Design and Planning
 
 - [Gantt Chart](https://github.com/users/SanderNilsen/projects/5/views/4?sortedBy%5Bdirection%5D=asc&sortedBy%5BcolumnId%5D=255978628)
-- [Design Prototype](https://www.figma.com/design/cplx77RmZD3eRYPOvaWFPV/Project-Exam-2---Holidaze?node-id=0-1&t=dWNel3OefZMtbjCj-1)
-- [Style Guide](https://www.figma.com/design/cplx77RmZD3eRYPOvaWFPV/Project-Exam-2---Holidaze?node-id=1-3&t=0fi7FotdZnMf9hAK-1)
+- [Design Prototype - Desktop](https://www.figma.com/proto/cplx77RmZD3eRYPOvaWFPV/Project-Exam-2---Holidaze?node-id=16-159&t=fOn47JYO2lzB6ep1-1&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=16%3A159)
+- [Design Prototype - Mobile](https://www.figma.com/proto/cplx77RmZD3eRYPOvaWFPV/Project-Exam-2---Holidaze?node-id=30-1278&p=f&t=m39wIWYiAyb9zUSn-1&scaling=min-zoom&content-scaling=fixed&page-id=1%3A2&starting-point-node-id=30%3A1278)
+- [Style Guide](https://www.figma.com/design/cplx77RmZD3eRYPOvaWFPV/Project-Exam-2---Holidaze?node-id=1-3&t=Hi0k0CaWkZMQXNe5-1)
 - [Kanban Board](https://github.com/users/SanderNilsen/projects/5/views/1)
 - [Repository](https://github.com/SanderNilsen/project-exam-2-holidaze)
 - [Hosted Demo](https://holidaze-react.netlify.app/)
