@@ -1,10 +1,10 @@
 import { useState } from "react";
 import styled from "styled-components";
-import Modal from "../ui/Modal";
-import InputField from "../ui/InputField";
-import PrimaryButton from "../ui/PrimaryButton";
-import SecondaryButton from "../ui/SecondaryButton";
-import FormMessage from "../ui/FormMessage";
+import Modal from "../../components/ui/Modal";
+import InputField from "../../components/ui/InputField";
+import PrimaryButton from "../../components/ui/PrimaryButton";
+import SecondaryButton from "../../components/ui/SecondaryButton";
+import FormMessage from "../../components/ui/FormMessage";
 import { updateAvatar } from "../../api/profile";
 
 const ModalForm = styled.form`

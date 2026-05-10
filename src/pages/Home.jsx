@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import VenueCard from "../components/venues/VenueCard";
+import VenueCard from "../features/venues/VenueCard";
 import FormMessage from "../components/ui/FormMessage";
 import { getVenues } from "../api/venues";
 import { formatLocation, getFacilities } from "../utils/venueUtils";

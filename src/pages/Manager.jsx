@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import Modal from "../components/ui/Modal";
-import ManagerVenueForm from "../components/dashboard/ManagerVenueForm";
-import HeroPanel from "../components/dashboard/HeroPanel";
-import DashboardShell from "../components/dashboard/DashboardShell";
-import SidebarCard from "../components/dashboard/SidebarCard";
-import SectionBlock from "../components/dashboard/SectionBlock";
-import ManagerVenueCard from "../components/dashboard/ManagerVenueCard";
-import BookingCard from "../components/dashboard/BookingCard";
+import ManagerVenueForm from "../features/dashboard/ManagerVenueForm";
+import HeroPanel from "../features/dashboard/HeroPanel";
+import DashboardShell from "../features/dashboard/DashboardShell";
+import SidebarCard from "../features/dashboard/SidebarCard";
+import SectionBlock from "../features/dashboard/SectionBlock";
+import ManagerVenueCard from "../features/dashboard/ManagerVenueCard";
+import BookingCard from "../features/dashboard/BookingCard";
 import FormMessage from "../components/ui/FormMessage";
-import AvatarModal from "../components/dashboard/AvatarModal";
+import AvatarModal from "../features/dashboard/AvatarModal";
 import { getProfileVenues } from "../api/profile";
 import { createVenue, updateVenue, deleteVenue } from "../api/venues";
 import { formatDisplayDate } from "../utils/dateUtils";
@@ -28,7 +28,7 @@ import {
   StatItem,
   StatLabel,
   StatValue,
-} from "../components/dashboard/SidebarElements";
+} from "../features/dashboard/SidebarElements";
 
 const AddButton = styled.button`
   height: 40px;

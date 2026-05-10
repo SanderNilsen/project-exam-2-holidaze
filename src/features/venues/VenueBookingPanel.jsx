@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import FormMessage from "../ui/FormMessage";
-import InputField from "../ui/InputField";
-import PrimaryButton from "../ui/PrimaryButton";
+import FormMessage from "../../components/ui/FormMessage";
+import InputField from "../../components/ui/InputField";
+import PrimaryButton from "../../components/ui/PrimaryButton";
 import BookingCalendar from "./BookingCalendar";
 
 const BookingCard = styled.aside`

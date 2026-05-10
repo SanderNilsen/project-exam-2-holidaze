@@ -1,8 +1,8 @@
 import styled from "styled-components";
-import InputField from "../ui/InputField";
-import PrimaryButton from "../ui/PrimaryButton";
-import SecondaryButton from "../ui/SecondaryButton";
-import FormMessage from "../ui/FormMessage";
+import InputField from "../../components/ui/InputField";
+import PrimaryButton from "../../components/ui/PrimaryButton";
+import SecondaryButton from "../../components/ui/SecondaryButton";
+import FormMessage from "../../components/ui/FormMessage";
 
 const Form = styled.form`
   display: grid;

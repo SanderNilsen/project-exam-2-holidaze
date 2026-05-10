@@ -77,14 +77,13 @@ const ActionRow = styled.div`
 const EditButton = styled.button`
   height: 40px;
   padding: 0 18px;
-  border: none;
+  border: 1px solid var(--border);
   border-radius: 10px;
   background: #ffffff;
   color: var(--primary);
   font-size: 16px;
   font-weight: 500;
   cursor: pointer;
-  border: 1px solid var(--border);
 
   &:hover {
     background: #f8fafc;
@@ -134,6 +133,7 @@ export default function ManagerVenueCard({
   onDelete,
 }) {
   const navigate = useNavigate();
+
   return (
     <Card>
       <Image src={image} alt={title} />

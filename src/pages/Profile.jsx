@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import HeroPanel from "../components/dashboard/HeroPanel";
-import DashboardShell from "../components/dashboard/DashboardShell";
-import SidebarCard from "../components/dashboard/SidebarCard";
-import SectionBlock from "../components/dashboard/SectionBlock";
-import ProfileVenueCard from "../components/dashboard/ProfileVenueCard";
-import AvatarModal from "../components/dashboard/AvatarModal";
+import HeroPanel from "../features/dashboard/HeroPanel";
+import DashboardShell from "../features/dashboard/DashboardShell";
+import SidebarCard from "../features/dashboard/SidebarCard";
+import SectionBlock from "../features/dashboard/SectionBlock";
+import ProfileVenueCard from "../features/dashboard/ProfileVenueCard";
+import AvatarModal from "../features/dashboard/AvatarModal";
 import FormMessage from "../components/ui/FormMessage";
 import { getProfileBookings } from "../api/profile";
 import { deleteBooking } from "../api/bookings";
@@ -19,7 +19,7 @@ import {
   StatItem,
   StatLabel,
   StatValue,
-} from "../components/dashboard/SidebarElements";
+} from "../features/dashboard/SidebarElements";
 
 const EmptyText = styled.p`
   margin: 0;

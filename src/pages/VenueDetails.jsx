@@ -4,9 +4,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import FormMessage from "../components/ui/FormMessage";
 import { getVenueById } from "../api/venues";
 import { createBooking } from "../api/bookings";
-import VenueImageCarousel from "../components/venues/VenueImageCarousel";
-import VenueInfo from "../components/venues/VenueInfo";
-import VenueBookingPanel from "../components/venues/VenueBookingPanel";
+import VenueImageCarousel from "../features/venues/VenueImageCarousel";
+import VenueInfo from "../features/venues/VenueInfo";
+import VenueBookingPanel from "../features/venues/VenueBookingPanel";
 
 const PageWrapper = styled.section`
   background: var(--background-light);

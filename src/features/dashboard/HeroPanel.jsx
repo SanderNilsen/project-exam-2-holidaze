@@ -79,14 +79,7 @@ const Role = styled.span`
   font-weight: 600;
 `;
 
-export default function HeroPanel({
-  name,
-  email,
-  role,
-  buttonText = "Edit Profile",
-  avatarUrl,
-  onEdit,
-}) {
+export default function HeroPanel({ name, email, role, avatarUrl }) {
   return (
     <Hero>
       <HeroContainer>
