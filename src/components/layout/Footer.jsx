@@ -89,7 +89,7 @@ export default function Footer() {
 
           <Column>
             <ColumnTitle>Manager</ColumnTitle>
-            <FooterLink to="/manager">Manager Dashboard</FooterLink>
+            <FooterLink to="/manager">Dashboard</FooterLink>
             <FooterLink to="/register">Become a host</FooterLink>
           </Column>
 

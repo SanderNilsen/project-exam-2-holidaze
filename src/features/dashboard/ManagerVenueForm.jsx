@@ -66,7 +66,7 @@ export default function ManagerVenueForm({
         id="name"
         label="Venue name"
         type="text"
-        placeholder="Scandinavian apartment"
+        placeholder="Title"
         value={venueForm.name}
         onChange={onChange}
       />
@@ -84,7 +84,7 @@ export default function ManagerVenueForm({
         id="price"
         label="Price per night"
         type="number"
-        placeholder="180"
+        placeholder="Price"
         value={venueForm.price}
         onChange={onChange}
       />
@@ -93,7 +93,7 @@ export default function ManagerVenueForm({
         id="maxGuests"
         label="Max guests"
         type="number"
-        placeholder="4"
+        placeholder="Max guests"
         value={venueForm.maxGuests}
         onChange={onChange}
       />
@@ -111,7 +111,7 @@ export default function ManagerVenueForm({
         id="city"
         label="City"
         type="text"
-        placeholder="Oslo"
+        placeholder="City"
         value={venueForm.city}
         onChange={onChange}
       />
@@ -120,7 +120,7 @@ export default function ManagerVenueForm({
         id="country"
         label="Country"
         type="text"
-        placeholder="Norway"
+        placeholder="Country"
         value={venueForm.country}
         onChange={onChange}
       />
@@ -129,7 +129,7 @@ export default function ManagerVenueForm({
         id="lat"
         label="Latitude"
         type="number"
-        placeholder="59.9139"
+        placeholder="lat"
         value={venueForm.lat}
         onChange={onChange}
       />
@@ -138,7 +138,7 @@ export default function ManagerVenueForm({
         id="lng"
         label="Longitude"
         type="number"
-        placeholder="10.7522"
+        placeholder="lng"
         value={venueForm.lng}
         onChange={onChange}
       />
