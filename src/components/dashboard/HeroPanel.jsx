@@ -79,26 +79,6 @@ const Role = styled.span`
   font-weight: 600;
 `;
 
-const ActionButton = styled.button`
-  height: 40px;
-  padding: 0 18px;
-  border: none;
-  border-radius: 10px;
-  background: #ffffff;
-  color: var(--primary);
-  font-size: 16px;
-  font-weight: 500;
-  cursor: pointer;
-
-  &:hover {
-    background: #f8fafc;
-  }
-
-  @media (max-width: 520px) {
-    width: 100%;
-  }
-`;
-
 export default function HeroPanel({
   name,
   email,
@@ -112,7 +92,7 @@ export default function HeroPanel({
       <HeroContainer>
         <ProfileInfo>
           <Avatar
-            src={avatarUrl || "/images/avatar-placeholder.svg"}
+            src={avatarUrl || "/images/avatar-placeholder.png"}
             alt={`${name} avatar`}
           />
           <TextGroup>
@@ -121,10 +101,6 @@ export default function HeroPanel({
             <Role>{role}</Role>
           </TextGroup>
         </ProfileInfo>
-
-        <ActionButton type="button" onClick={onEdit}>
-          {buttonText}
-        </ActionButton>
       </HeroContainer>
     </Hero>
   );

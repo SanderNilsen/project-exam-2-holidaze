@@ -290,7 +290,9 @@ const upcomingBookings = venueBookings.filter(
       <SidebarCard title="Account">
         <MenuList>
           <ActiveMenuItem>My Venues</ActiveMenuItem>
-          <MenuItem>Account Details</MenuItem>
+            <MenuItem type="button" onClick={openAvatarModal}>
+              Edit Profile
+            </MenuItem>
         </MenuList>
       </SidebarCard>
 
@@ -325,9 +327,7 @@ const upcomingBookings = venueBookings.filter(
         name={user?.name || "UserName"}
         email={user?.email || "user@stud.noroff.no"}
         role="Manager Account"
-        buttonText="Edit Profile"
         avatarUrl={user?.avatar?.url}
-        onEdit={openAvatarModal}
       />
 
       <DashboardShell sidebar={sidebar}>

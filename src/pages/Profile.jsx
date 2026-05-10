@@ -128,7 +128,9 @@ export default function Profile() {
       <SidebarCard title="Account">
         <MenuList>
           <ActiveMenuItem>My Bookings</ActiveMenuItem>
-          <MenuItem>Account Details</MenuItem>
+            <MenuItem type="button" onClick={openAvatarModal}>
+              Edit Profile
+            </MenuItem>
         </MenuList>
       </SidebarCard>
 
@@ -165,9 +167,7 @@ export default function Profile() {
         name={user?.name || "UserName"}
         email={user?.email || "user@stud.noroff.no"}
         role={user?.venueManager ? "Manager Account" : "Customer Account"}
-        buttonText="Edit Profile"
         avatarUrl={user?.avatar?.url}
-        onEdit={openAvatarModal}
       />
 
       <DashboardShell sidebar={sidebar}>
