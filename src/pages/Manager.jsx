@@ -48,7 +48,7 @@ const AddButton = styled.button`
 `;
 
 export default function Manager() {
-  const { user, token, apiKey, updateUser } = useAuth();
+  const { user, token, apiKey } = useAuth();
 
   const [venues, setVenues] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -242,9 +242,9 @@ export default function Manager() {
       <SidebarCard title="Account">
         <MenuList>
           <ActiveMenuItem>My Venues</ActiveMenuItem>
-            <MenuItem type="button" onClick={openAvatarModal}>
-              Edit Profile
-            </MenuItem>
+          <MenuItem type="button" onClick={openAvatarModal}>
+            Edit Profile
+          </MenuItem>
         </MenuList>
       </SidebarCard>
 
@@ -353,10 +353,7 @@ export default function Manager() {
           onCancel={closeModal}
         />
       </Modal>
-      <AvatarModal
-        isOpen={isAvatarModalOpen}
-        onClose={closeAvatarModal}
-      />
+      <AvatarModal isOpen={isAvatarModalOpen} onClose={closeAvatarModal} />
     </>
   );
 }

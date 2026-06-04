@@ -27,10 +27,7 @@ const FallbackText = styled.p`
 
 function hasValidCoordinates(lat, lng) {
   return (
-    typeof lat === "number" &&
-    typeof lng === "number" &&
-    lat !== 0 &&
-    lng !== 0
+    typeof lat === "number" && typeof lng === "number" && lat !== 0 && lng !== 0
   );
 }
 
@@ -63,11 +60,7 @@ export default function VenueMap({ location }) {
     <MapWrapper>
       <Title>Location</Title>
 
-      <MapFrame
-        title="Venue location map"
-        src={mapUrl}
-        loading="lazy"
-      />
+      <MapFrame title="Venue location map" src={mapUrl} loading="lazy" />
     </MapWrapper>
   );
 }

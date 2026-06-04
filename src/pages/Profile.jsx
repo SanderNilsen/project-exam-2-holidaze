@@ -40,7 +40,7 @@ function getBookingLocation(venue) {
 }
 
 export default function Profile() {
-  const { user, token, apiKey, updateUser } = useAuth();
+  const { user, token, apiKey } = useAuth();
 
   const [bookings, setBookings] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -85,24 +85,24 @@ export default function Profile() {
   }, [user?.name, token, apiKey]);
 
   async function handleCancelBooking(id) {
-  const confirmed = window.confirm(
-    "Are you sure you want to cancel this booking?"
-  );
+    const confirmed = window.confirm(
+      "Are you sure you want to cancel this booking?"
+    );
 
-  if (!confirmed) return;
+    if (!confirmed) return;
 
-  try {
-    await deleteBooking({
-      id,
-      token,
-      apiKey,
-    });
+    try {
+      await deleteBooking({
+        id,
+        token,
+        apiKey,
+      });
 
-    setBookings((prev) => prev.filter((booking) => booking.id !== id));
-  } catch (error) {
-    setPageError(error.message || "Could not cancel booking.");
+      setBookings((prev) => prev.filter((booking) => booking.id !== id));
+    } catch (error) {
+      setPageError(error.message || "Could not cancel booking.");
+    }
   }
-}
 
   const today = new Date();
 
@@ -119,9 +119,9 @@ export default function Profile() {
       <SidebarCard title="Account">
         <MenuList>
           <ActiveMenuItem>My Bookings</ActiveMenuItem>
-            <MenuItem type="button" onClick={openAvatarModal}>
-              Edit Profile
-            </MenuItem>
+          <MenuItem type="button" onClick={openAvatarModal}>
+            Edit Profile
+          </MenuItem>
         </MenuList>
       </SidebarCard>
 
@@ -222,10 +222,7 @@ export default function Profile() {
         </SectionBlock>
       </DashboardShell>
 
-      <AvatarModal
-        isOpen={isAvatarModalOpen}
-        onClose={closeAvatarModal}
-      />
+      <AvatarModal isOpen={isAvatarModalOpen} onClose={closeAvatarModal} />
     </>
   );
 }

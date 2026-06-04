@@ -75,8 +75,8 @@ export default function Footer() {
           <Brand>
             <Logo>Holidaze</Logo>
             <Description>
-              Your perfect stay awaits. Discover and book amazing venues
-              around the world.
+              Your perfect stay awaits. Discover and book amazing venues around
+              the world.
             </Description>
           </Brand>
 

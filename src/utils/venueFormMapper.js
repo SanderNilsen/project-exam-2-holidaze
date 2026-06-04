@@ -130,7 +130,8 @@ export function validateVenueForm(venueForm) {
   }
 
   const hasInvalidLatitude =
-    venueForm.lat && (Number(venueForm.lat) < -90 || Number(venueForm.lat) > 90);
+    venueForm.lat &&
+    (Number(venueForm.lat) < -90 || Number(venueForm.lat) > 90);
 
   if (hasInvalidLatitude) {
     return "Latitude must be between -90 and 90.";

@@ -50,9 +50,7 @@ export default function AuthCard({
         <Footer>
           {footerText}{" "}
           {footerLinkTo && (
-            <FooterLink to={footerLinkTo}>
-              {footerLinkText}
-            </FooterLink>
+            <FooterLink to={footerLinkTo}>{footerLinkText}</FooterLink>
           )}
         </Footer>
       )}

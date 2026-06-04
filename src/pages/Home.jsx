@@ -130,16 +130,16 @@ export default function Home() {
   const [pageError, setPageError] = useState("");
 
   function handleSearchSubmit(event) {
-  event.preventDefault();
+    event.preventDefault();
 
-  const query = search.trim();
+    const query = search.trim();
 
-  if (query) {
-    navigate(`/venues?search=${encodeURIComponent(query)}`);
-  } else {
-    navigate("/venues");
+    if (query) {
+      navigate(`/venues?search=${encodeURIComponent(query)}`);
+    } else {
+      navigate("/venues");
+    }
   }
-}
 
   useEffect(() => {
     async function loadFeaturedVenues() {

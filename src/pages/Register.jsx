@@ -94,7 +94,7 @@ export default function Register() {
   const navigate = useNavigate();
 
   const { saveAuth } = useAuth();
-  
+
   function handleChange(event) {
     const { name, value, type, checked } = event.target;
 
@@ -211,8 +211,9 @@ export default function Register() {
 
               {formData.venueManager && (
                 <InfoBox>
-                  A venue manager account is used for managing and adding venues.
-                  If you only want to book venues, leave this box unchecked.
+                  A venue manager account is used for managing and adding
+                  venues. If you only want to book venues, leave this box
+                  unchecked.
                 </InfoBox>
               )}
             </CheckboxGroup>

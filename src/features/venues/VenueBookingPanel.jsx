@@ -53,8 +53,8 @@ export default function VenueBookingPanel({
       <BookingCard>
         <BookingTitle>Manager account</BookingTitle>
         <HelperText>
-          Venue managers cannot book venues. Use your dashboard to add and manage
-          your own venues.
+          Venue managers cannot book venues. Use your dashboard to add and
+          manage your own venues.
         </HelperText>
 
         <PrimaryButton type="button" onClick={onManagerDashboard}>
