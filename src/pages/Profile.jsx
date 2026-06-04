@@ -1,4 +1,5 @@
 import { useAuth } from "../context/AuthContext";
+import { useToast } from "../context/ToastContext";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
@@ -41,6 +42,7 @@ function getBookingLocation(venue) {
 
 export default function Profile() {
   const { user, token, apiKey } = useAuth();
+  const { showToast } = useToast();
 
   const [bookings, setBookings] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -99,8 +101,12 @@ export default function Profile() {
       });
 
       setBookings((prev) => prev.filter((booking) => booking.id !== id));
+      showToast("Booking cancelled.");
     } catch (error) {
-      setPageError(error.message || "Could not cancel booking.");
+      const message = error.message || "Could not cancel booking.";
+
+      setPageError(message);
+      showToast(message, "error");
     }
   }
 

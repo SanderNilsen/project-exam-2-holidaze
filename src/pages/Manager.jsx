@@ -1,4 +1,5 @@
 import { useAuth } from "../context/AuthContext";
+import { useToast } from "../context/ToastContext";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import Modal from "../components/ui/Modal";
@@ -49,6 +50,7 @@ const AddButton = styled.button`
 
 export default function Manager() {
   const { user, token, apiKey } = useAuth();
+  const { showToast } = useToast();
 
   const [venues, setVenues] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -120,9 +122,11 @@ export default function Manager() {
 
     try {
       await deleteVenue({ id, token, apiKey });
+
       setVenues((prev) => prev.filter((venue) => venue.id !== id));
+      showToast("Venue deleted.");
     } catch (error) {
-      setPageError(error.message || "Could not delete venue.");
+      showToast(error.message || "Could not delete venue.", "error");
     }
   }
 
@@ -177,6 +181,8 @@ export default function Manager() {
               : venue
           )
         );
+
+        showToast("Venue updated.");
       } else {
         const newVenue = await createVenue({
           token,
@@ -185,11 +191,15 @@ export default function Manager() {
         });
 
         setVenues((prev) => [{ ...newVenue, bookings: [] }, ...prev]);
+        showToast("Venue created.");
       }
 
       closeModal();
     } catch (error) {
-      setFormError(error.message || "Something went wrong.");
+      const message = error.message || "Something went wrong.";
+
+      setFormError(message);
+      showToast(message, "error");
     } finally {
       setIsSubmitting(false);
     }
@@ -287,6 +297,7 @@ export default function Manager() {
           <AddButton type="button" onClick={openModal}>
             + Add new venue
           </AddButton>
+
           {isLoading && <p>Loading venues...</p>}
 
           {!isLoading && venues.length === 0 && (
@@ -330,6 +341,7 @@ export default function Manager() {
             ))}
         </SectionBlock>
       </DashboardShell>
+
       <Modal
         isOpen={isModalOpen}
         onClose={closeModal}
@@ -353,6 +365,7 @@ export default function Manager() {
           onCancel={closeModal}
         />
       </Modal>
+
       <AvatarModal isOpen={isAvatarModalOpen} onClose={closeAvatarModal} />
     </>
   );
