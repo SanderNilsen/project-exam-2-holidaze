@@ -19,3 +19,36 @@ export function getFacilities(meta) {
 
   return facilities;
 }
+
+export function getVenueSearchText(venue) {
+  const facilities = getFacilities(venue.meta).join(" ");
+
+  return [
+    venue.name,
+    venue.title,
+    venue.description,
+    venue.location?.address,
+    venue.location?.city,
+    venue.location?.zip,
+    venue.location?.country,
+    venue.location?.continent,
+    facilities,
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+}
+
+export function matchesSearch(venue, query) {
+  const normalizedQuery = query.trim().toLowerCase();
+
+  if (!normalizedQuery) return true;
+
+  return getVenueSearchText(venue).includes(normalizedQuery);
+}
+
+export function matchesFacilities(venue, selectedFacilities) {
+  if (selectedFacilities.length === 0) return true;
+
+  return selectedFacilities.every((facility) => venue.meta?.[facility]);
+}

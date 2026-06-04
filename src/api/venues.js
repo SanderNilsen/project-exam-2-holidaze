@@ -38,6 +38,44 @@ export async function getVenues({
 }
 
 /**
+ * Fetches all venues from the Noroff Holidaze API by requesting every
+ * paginated result page.
+ *
+ * This is useful when the client needs to search, filter, or sort across the
+ * full venue dataset instead of only the currently loaded page.
+ *
+ * @async
+ * @function getAllVenues
+ *
+ * @returns {Promise<Array>} Returns an array containing all venue objects
+ *
+ * @throws {Error} Throws an error if any paginated venue request fails
+ *
+ * @example
+ * const venues = await getAllVenues();
+ */
+export async function getAllVenues() {
+  let page = 1;
+  let allVenues = [];
+  let isLastPage = false;
+
+  while (!isLastPage) {
+    const result = await getVenues({
+      page,
+      limit: 100,
+      sort: "created",
+      sortOrder: "desc",
+    });
+
+    allVenues = [...allVenues, ...result.data];
+    isLastPage = result.meta.isLastPage;
+    page += 1;
+  }
+
+  return allVenues;
+}
+
+/**
  * Fetches a single venue by id from the Noroff Holidaze API.
  *
  * @async

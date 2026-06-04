@@ -1,10 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
+import { useSearchParams } from "react-router-dom";
 import VenueCard from "../features/venues/VenueCard";
 import FormMessage from "../components/ui/FormMessage";
-import { getVenues } from "../api/venues";
-import { formatLocation, getFacilities } from "../utils/venueUtils";
-import { useSearchParams } from "react-router-dom";
+import { getAllVenues } from "../api/venues";
+import {
+  formatLocation,
+  getFacilities,
+  matchesSearch,
+  matchesFacilities,
+} from "../utils/venueUtils";
 
 const PageWrapper = styled.section`
   background: var(--background-light);
@@ -49,6 +54,12 @@ const SearchBar = styled.div`
   gap: 12px;
 `;
 
+const ControlsRow = styled.div`
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+`;
+
 const SearchInput = styled.input`
   width: 100%;
   max-width: 420px;
@@ -71,6 +82,44 @@ const SearchInput = styled.input`
   }
 `;
 
+const Select = styled.select`
+  height: 44px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--background);
+  color: var(--text);
+  font-size: 14px;
+`;
+
+const FilterGroup = styled.div`
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+`;
+
+const FilterLabel = styled.label`
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--background);
+  color: var(--text-muted);
+  font-size: 13px;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--text);
+    border-color: var(--primary);
+  }
+`;
+
+const FilterCheckbox = styled.input`
+  margin: 0;
+`;
+
 const ResultsText = styled.p`
   margin: 0;
   font-size: 14px;
@@ -91,33 +140,16 @@ const EmptyText = styled.p`
 
 const VenueGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 28px;
-  justify-items: center;
 
-  @media (max-width: 1050px) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  @media (max-width: 980px) {
+    grid-template-columns: repeat(2, 1fr);
   }
 
-  @media (max-width: 680px) {
+  @media (max-width: 640px) {
     grid-template-columns: 1fr;
   }
-`;
-
-const ControlsRow = styled.div`
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-`;
-
-const Select = styled.select`
-  height: 44px;
-  padding: 0 12px;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-  background: var(--background);
-  color: var(--text);
-  font-size: 14px;
 `;
 
 const LoadMoreButton = styled.button`
@@ -135,11 +167,6 @@ const LoadMoreButton = styled.button`
   &:hover {
     background: var(--primary-hover);
   }
-
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
 `;
 
 export default function Venues() {
@@ -149,34 +176,26 @@ export default function Venues() {
   const [venues, setVenues] = useState([]);
   const [search, setSearch] = useState(initialSearch);
   const [sortBy, setSortBy] = useState("");
+  const [selectedFacilities, setSelectedFacilities] = useState([]);
+  const [visibleCount, setVisibleCount] = useState(12);
   const [isLoading, setIsLoading] = useState(true);
   const [pageError, setPageError] = useState("");
 
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  function handleFacilityChange(event) {
+    const { value, checked } = event.target;
 
-async function handleLoadMore() {
-  try {
-    setIsLoadingMore(true);
+    setSelectedFacilities((prev) => {
+      if (checked) {
+        return [...prev, value];
+      }
 
-    const nextPage = page + 1;
-    const result = await getVenues({
-      page: nextPage,
-      limit: 12,
-      sort: "created",
-      sortOrder: "desc",
+      return prev.filter((item) => item !== value);
     });
-
-    setVenues((prev) => [...prev, ...result.data]);
-    setPage(nextPage);
-    setHasMore(!result.meta.isLastPage);
-  } catch (error) {
-    setPageError(error.message || "Could not load more venues.");
-  } finally {
-    setIsLoadingMore(false);
   }
-}
+
+  function handleLoadMore() {
+    setVisibleCount((prev) => prev + 12);
+  }
 
   useEffect(() => {
     async function loadVenues() {
@@ -184,14 +203,8 @@ async function handleLoadMore() {
         setIsLoading(true);
         setPageError("");
 
-        const result = await getVenues({
-          page: 1,
-          limit: 12,
-          sort: "created",
-          sortOrder: "desc",
-        });
-        setVenues(result.data);
-        setHasMore(!result.meta.isLastPage);
+        const data = await getAllVenues();
+        setVenues(data);
       } catch (error) {
         setPageError(error.message || "Something went wrong.");
       } finally {
@@ -202,22 +215,15 @@ async function handleLoadMore() {
     loadVenues();
   }, []);
 
+  useEffect(() => {
+    setVisibleCount(12);
+  }, [search, selectedFacilities, sortBy]);
+
   const filteredVenues = useMemo(() => {
-    const query = search.trim().toLowerCase();
-
     let result = venues.filter((venue) => {
-      if (!query) return true;
-
-      const name = venue.name?.toLowerCase() || "";
-      const description = venue.description?.toLowerCase() || "";
-      const city = venue.location?.city?.toLowerCase() || "";
-      const country = venue.location?.country?.toLowerCase() || "";
-
       return (
-        name.includes(query) ||
-        description.includes(query) ||
-        city.includes(query) ||
-        country.includes(query)
+        matchesSearch(venue, search) &&
+        matchesFacilities(venue, selectedFacilities)
       );
     });
 
@@ -243,7 +249,10 @@ async function handleLoadMore() {
     }
 
     return result;
-  }, [venues, search, sortBy]);
+  }, [venues, search, selectedFacilities, sortBy]);
+
+  const visibleVenues = filteredVenues.slice(0, visibleCount);
+  const hasMoreVisible = visibleCount < filteredVenues.length;
 
   return (
     <PageWrapper>
@@ -251,35 +260,81 @@ async function handleLoadMore() {
         <HeroContent>
           <Title>All Venues</Title>
           <Description>
-            Browse venues for every kind of trip, from city apartments to mountain cabins.
+            Browse venues for every kind of trip, from city apartments to
+            mountain cabins.
           </Description>
         </HeroContent>
       </Hero>
 
       <Content>
-      <SearchBar>
-        <ControlsRow>
-          <SearchInput
-            type="text"
-            placeholder="Search venues..."
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-          />
+        <SearchBar>
+          <ControlsRow>
+            <SearchInput
+              type="text"
+              placeholder="Search by title, city, country, facilities..."
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+            />
 
-          <Select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-          >
-            <option value="">Newest</option>
-            <option value="priceAsc">Price: Low to High</option>
-            <option value="priceDesc">Price: High to Low</option>
-            <option value="rating">Rating</option>
-            <option value="guests">Guests</option>
-          </Select>
-        </ControlsRow>
+            <Select
+              value={sortBy}
+              onChange={(event) => setSortBy(event.target.value)}
+            >
+              <option value="">Newest</option>
+              <option value="priceAsc">Price: Low to High</option>
+              <option value="priceDesc">Price: High to Low</option>
+              <option value="rating">Rating</option>
+              <option value="guests">Guests</option>
+            </Select>
+          </ControlsRow>
 
-        <ResultsText>{filteredVenues.length} venues loaded</ResultsText>
-      </SearchBar>
+          <FilterGroup>
+            <FilterLabel>
+              <FilterCheckbox
+                type="checkbox"
+                value="wifi"
+                checked={selectedFacilities.includes("wifi")}
+                onChange={handleFacilityChange}
+              />
+              Wifi
+            </FilterLabel>
+
+            <FilterLabel>
+              <FilterCheckbox
+                type="checkbox"
+                value="parking"
+                checked={selectedFacilities.includes("parking")}
+                onChange={handleFacilityChange}
+              />
+              Parking
+            </FilterLabel>
+
+            <FilterLabel>
+              <FilterCheckbox
+                type="checkbox"
+                value="breakfast"
+                checked={selectedFacilities.includes("breakfast")}
+                onChange={handleFacilityChange}
+              />
+              Breakfast
+            </FilterLabel>
+
+            <FilterLabel>
+              <FilterCheckbox
+                type="checkbox"
+                value="pets"
+                checked={selectedFacilities.includes("pets")}
+                onChange={handleFacilityChange}
+              />
+              Pets
+            </FilterLabel>
+          </FilterGroup>
+
+          <ResultsText>
+            Showing {visibleVenues.length} of {filteredVenues.length} matching
+            venues
+          </ResultsText>
+        </SearchBar>
 
         {isLoading && <LoadingText>Loading venues...</LoadingText>}
 
@@ -289,36 +344,34 @@ async function handleLoadMore() {
           <EmptyText>No venues matched your search.</EmptyText>
         )}
 
-      {!isLoading && !pageError && filteredVenues.length > 0 && (
-        <>
-          <VenueGrid>
-            {filteredVenues.map((venue) => (
-              <VenueCard
-                key={venue.id}
-                id={venue.id}
-                image={venue.media?.[0]?.url || "/images/placeholder-venue.svg"}
-                title={venue.name}
-                location={formatLocation(venue.location)}
-                guests={venue.maxGuests}
-                description={venue.description}
-                price={venue.price}
-                rating={venue.rating}
-                facilities={getFacilities(venue.meta)}
-              />
-            ))}
-          </VenueGrid>
+        {!isLoading && !pageError && filteredVenues.length > 0 && (
+          <>
+            <VenueGrid>
+              {visibleVenues.map((venue) => (
+                <VenueCard
+                  key={venue.id}
+                  id={venue.id}
+                  image={
+                    venue.media?.[0]?.url || "/images/placeholder-venue.svg"
+                  }
+                  title={venue.name}
+                  location={formatLocation(venue.location)}
+                  guests={venue.maxGuests}
+                  description={venue.description}
+                  price={venue.price}
+                  rating={venue.rating}
+                  facilities={getFacilities(venue.meta)}
+                />
+              ))}
+            </VenueGrid>
 
-          {hasMore && (
-            <LoadMoreButton
-              type="button"
-              onClick={handleLoadMore}
-              disabled={isLoadingMore}
-            >
-              {isLoadingMore ? "Loading..." : "Load More"}
-            </LoadMoreButton>
-          )}
-        </>
-      )}
+            {hasMoreVisible && (
+              <LoadMoreButton type="button" onClick={handleLoadMore}>
+                Load More
+              </LoadMoreButton>
+            )}
+          </>
+        )}
       </Content>
     </PageWrapper>
   );
