@@ -9,9 +9,12 @@ export function createEmptyVenueForm() {
     description: "",
     price: "",
     maxGuests: "",
-    mediaUrl: "",
+    media: [{ url: "", alt: "" }],
+    address: "",
     city: "",
+    zip: "",
     country: "",
+    continent: "",
     lat: "",
     lng: "",
     wifi: false,
@@ -28,16 +31,27 @@ export function createEmptyVenueForm() {
  * @returns {Object} Venue form values ready for editing.
  */
 export function mapVenueToForm(venue) {
+  const media =
+    venue.media?.length > 0
+      ? venue.media.map((image) => ({
+          url: image.url || "",
+          alt: image.alt || venue.name || "",
+        }))
+      : [{ url: "", alt: venue.name || "" }];
+
   return {
     name: venue.name || "",
     description: venue.description || "",
     price: venue.price || "",
     maxGuests: venue.maxGuests || "",
-    mediaUrl: venue.media?.[0]?.url || "",
+    media,
+    address: venue.location?.address || "",
     city: venue.location?.city || "",
+    zip: venue.location?.zip || "",
     country: venue.location?.country || "",
-    lat: venue.location?.lat ?? "",
-    lng: venue.location?.lng ?? "",
+    continent: venue.location?.continent || "",
+    lat: venue.location?.lat || "",
+    lng: venue.location?.lng || "",
     wifi: venue.meta?.wifi || false,
     parking: venue.meta?.parking || false,
     breakfast: venue.meta?.breakfast || false,
@@ -46,10 +60,31 @@ export function mapVenueToForm(venue) {
 }
 
 /**
- * Validates required venue form fields before create or update requests.
+ * Validates the venue form before creating or updating a venue.
  *
- * @param {Object} venueForm - Current venue form values.
- * @returns {string} Error message when invalid, otherwise an empty string.
+ * Checks required text fields, numeric values, image fields, image URL format,
+ * and optional latitude/longitude ranges.
+ *
+ * @function validateVenueForm
+ *
+ * @param {Object} venueForm - The venue form state to validate
+ * @param {string} venueForm.name - Venue name
+ * @param {string} venueForm.description - Venue description
+ * @param {string|number} venueForm.price - Price per night
+ * @param {string|number} venueForm.maxGuests - Maximum number of guests
+ * @param {Array<{url: string, alt: string}>} [venueForm.media] - Venue image fields
+ * @param {string|number} [venueForm.lat] - Optional latitude value
+ * @param {string|number} [venueForm.lng] - Optional longitude value
+ *
+ * @returns {string} Returns an error message if validation fails, otherwise an empty string
+ *
+ * @example
+ * const error = validateVenueForm(venueForm);
+ *
+ * if (error) {
+ *   setFormError(error);
+ *   return;
+ * }
  */
 export function validateVenueForm(venueForm) {
   if (!venueForm.name.trim()) {
@@ -68,6 +103,47 @@ export function validateVenueForm(venueForm) {
     return "Max guests must be at least 1.";
   }
 
+  const hasInvalidImage = venueForm.media?.some((image) => {
+    const hasUrl = image.url.trim();
+    const hasAlt = image.alt.trim();
+
+    return !hasUrl && hasAlt;
+  });
+
+  if (hasInvalidImage) {
+    return "Image alt text requires an image URL.";
+  }
+
+  const hasInvalidUrl = venueForm.media?.some((image) => {
+    if (!image.url.trim()) return false;
+
+    try {
+      new URL(image.url.trim());
+      return false;
+    } catch {
+      return true;
+    }
+  });
+
+  if (hasInvalidUrl) {
+    return "Please enter a valid image URL.";
+  }
+
+  const hasInvalidLatitude =
+    venueForm.lat && (Number(venueForm.lat) < -90 || Number(venueForm.lat) > 90);
+
+  if (hasInvalidLatitude) {
+    return "Latitude must be between -90 and 90.";
+  }
+
+  const hasInvalidLongitude =
+    venueForm.lng &&
+    (Number(venueForm.lng) < -180 || Number(venueForm.lng) > 180);
+
+  if (hasInvalidLongitude) {
+    return "Longitude must be between -180 and 180.";
+  }
+
   return "";
 }
 
@@ -77,36 +153,32 @@ export function validateVenueForm(venueForm) {
  * @param {Object} venueForm - Current venue form values.
  * @returns {Object} API-ready venue payload.
  */
-export function mapVenueFormToPayload(venueForm) {
-  const name = venueForm.name.trim();
-
+export function mapVenueFormToPayload(form) {
   return {
-    name,
-    description: venueForm.description.trim(),
-    price: Number(venueForm.price),
-    maxGuests: Number(venueForm.maxGuests),
-    media: venueForm.mediaUrl.trim()
-      ? [
-          {
-            url: venueForm.mediaUrl.trim(),
-            alt: name,
-          },
-        ]
-      : [],
+    name: form.name.trim(),
+    description: form.description.trim(),
+    price: Number(form.price),
+    maxGuests: Number(form.maxGuests),
+    media: form.media
+      .filter((image) => image.url.trim())
+      .map((image) => ({
+        url: image.url.trim(),
+        alt: image.alt.trim() || form.name.trim(),
+      })),
     meta: {
-      wifi: venueForm.wifi,
-      parking: venueForm.parking,
-      breakfast: venueForm.breakfast,
-      pets: venueForm.pets,
+      wifi: form.wifi,
+      parking: form.parking,
+      breakfast: form.breakfast,
+      pets: form.pets,
     },
     location: {
-      address: "",
-      city: venueForm.city.trim(),
-      zip: "",
-      country: venueForm.country.trim(),
-      continent: "",
-      lat: venueForm.lat ? Number(venueForm.lat) : 0,
-      lng: venueForm.lng ? Number(venueForm.lng) : 0,
+      address: form.address?.trim() || "",
+      city: form.city?.trim() || "",
+      zip: form.zip?.trim() || "",
+      country: form.country?.trim() || "",
+      continent: form.continent?.trim() || "",
+      lat: form.lat ? Number(form.lat) : 0,
+      lng: form.lng ? Number(form.lng) : 0,
     },
   };
 }

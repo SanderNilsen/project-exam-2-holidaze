@@ -51,12 +51,66 @@ const Checkbox = styled.input`
   margin: 0;
 `;
 
+const MediaGroup = styled.div`
+  display: grid;
+  gap: 12px;
+`;
+
+const MediaHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+`;
+
+const MediaTitle = styled.p`
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+`;
+
+const MediaItem = styled.div`
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--background-light);
+`;
+
+const SmallButton = styled.button`
+  height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--background);
+  color: var(--text);
+  font-size: 13px;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--background-light);
+  }
+`;
+
+const RemoveButton = styled(SmallButton)`
+  color: #dc2626;
+
+  &:hover {
+    background: #fef2f2;
+  }
+`;
+
 export default function ManagerVenueForm({
   venueForm,
   formError,
   isSubmitting,
   editingVenue,
   onChange,
+  onMediaChange,
+  onAddMediaField,
+  onRemoveMediaField,
   onSubmit,
   onCancel,
 }) {
@@ -98,14 +152,50 @@ export default function ManagerVenueForm({
         onChange={onChange}
       />
 
-      <InputField
-        id="mediaUrl"
-        label="Image URL"
-        type="url"
-        placeholder="https://example.com/image.jpg"
-        value={venueForm.mediaUrl}
-        onChange={onChange}
-      />
+      <MediaGroup>
+        <MediaHeader>
+          <MediaTitle>Images</MediaTitle>
+
+          <SmallButton type="button" onClick={onAddMediaField}>
+            Add another image
+          </SmallButton>
+        </MediaHeader>
+
+        {venueForm.media.map((image, index) => (
+          <MediaItem key={index}>
+            <InputField
+              id={`media-${index}-url`}
+              label={`Image URL ${index + 1}`}
+              type="url"
+              placeholder="https://example.com/image.jpg"
+              value={image.url}
+              onChange={(event) =>
+                onMediaChange(index, "url", event.target.value)
+              }
+            />
+
+            <InputField
+              id={`media-${index}-alt`}
+              label={`Image alt text ${index + 1}`}
+              type="text"
+              placeholder="Describe the image"
+              value={image.alt}
+              onChange={(event) =>
+                onMediaChange(index, "alt", event.target.value)
+              }
+            />
+
+            {venueForm.media.length > 1 && (
+              <RemoveButton
+                type="button"
+                onClick={() => onRemoveMediaField(index)}
+              >
+                Remove image
+              </RemoveButton>
+            )}
+          </MediaItem>
+        ))}
+      </MediaGroup>
 
       <InputField
         id="city"

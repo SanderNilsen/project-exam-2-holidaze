@@ -83,6 +83,36 @@ export default function Manager() {
     setFormError("");
   }
 
+  function handleMediaChange(index, field, value) {
+    setVenueForm((prev) => ({
+      ...prev,
+      media: prev.media.map((image, imageIndex) =>
+        imageIndex === index ? { ...image, [field]: value } : image
+      ),
+    }));
+
+    setFormError("");
+  }
+
+  function handleAddMediaField() {
+    setVenueForm((prev) => ({
+      ...prev,
+      media: [...prev.media, { url: "", alt: "" }],
+    }));
+  }
+
+  function handleRemoveMediaField(index) {
+    setVenueForm((prev) => ({
+      ...prev,
+      media:
+        prev.media.length > 1
+          ? prev.media.filter((_, imageIndex) => imageIndex !== index)
+          : [{ url: "", alt: "" }],
+    }));
+
+    setFormError("");
+  }
+
   async function handleDeleteVenue(id) {
     const confirmed = window.confirm(
       "Are you sure you want to delete this venue?"
@@ -318,6 +348,9 @@ export default function Manager() {
           isSubmitting={isSubmitting}
           editingVenue={editingVenue}
           onChange={handleVenueChange}
+          onMediaChange={handleMediaChange}
+          onAddMediaField={handleAddMediaField}
+          onRemoveMediaField={handleRemoveMediaField}
           onSubmit={handleVenueSubmit}
           onCancel={closeModal}
         />
