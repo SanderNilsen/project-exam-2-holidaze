@@ -198,6 +198,15 @@ export default function ManagerVenueForm({
       </MediaGroup>
 
       <InputField
+        id="address"
+        label="Address"
+        type="text"
+        placeholder="Address"
+        value={venueForm.address}
+        onChange={onChange}
+      />
+
+      <InputField
         id="city"
         label="City"
         type="text"
@@ -207,11 +216,29 @@ export default function ManagerVenueForm({
       />
 
       <InputField
+        id="zip"
+        label="Zip code"
+        type="text"
+        placeholder="0154"
+        value={venueForm.zip}
+        onChange={onChange}
+      />
+
+      <InputField
         id="country"
         label="Country"
         type="text"
         placeholder="Country"
         value={venueForm.country}
+        onChange={onChange}
+      />
+
+      <InputField
+        id="continent"
+        label="Continent"
+        type="text"
+        placeholder="Continent"
+        value={venueForm.continent}
         onChange={onChange}
       />
 

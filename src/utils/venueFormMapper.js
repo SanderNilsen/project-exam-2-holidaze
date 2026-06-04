@@ -148,10 +148,25 @@ export function validateVenueForm(venueForm) {
 }
 
 /**
- * Converts editable venue form state into the payload expected by the API.
+ * Maps venue form state to the payload shape required by the Noroff Holidaze API.
  *
- * @param {Object} venueForm - Current venue form values.
- * @returns {Object} API-ready venue payload.
+ * @function mapVenueFormToPayload
+ *
+ * @param {Object} form - Venue form state
+ * @param {string} form.name - Venue name
+ * @param {string} form.description - Venue description
+ * @param {string|number} form.price - Price per night
+ * @param {string|number} form.maxGuests - Maximum number of guests
+ * @param {Array<{url: string, alt: string}>} form.media - Venue images
+ * @param {string} [form.address] - Venue street address
+ * @param {string} [form.city] - Venue city
+ * @param {string} [form.zip] - Venue zip code
+ * @param {string} [form.country] - Venue country
+ * @param {string} [form.continent] - Venue continent
+ * @param {string|number} [form.lat] - Venue latitude
+ * @param {string|number} [form.lng] - Venue longitude
+ *
+ * @returns {Object} Venue payload for create/update requests
  */
 export function mapVenueFormToPayload(form) {
   return {
