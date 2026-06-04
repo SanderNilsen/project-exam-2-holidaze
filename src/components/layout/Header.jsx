@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import { Link, NavLink, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 const Wrapper = styled.header`
   border-bottom: 1px solid var(--border);
@@ -150,34 +151,11 @@ export default function Header() {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const [token, setToken] = useState(localStorage.getItem("token"));
-  const [user, setUser] = useState(
-    JSON.parse(localStorage.getItem("user") || "null")
-  );
-
-  useEffect(() => {
-    function syncAuthState() {
-      setToken(localStorage.getItem("token"));
-      setUser(JSON.parse(localStorage.getItem("user") || "null"));
-    }
-
-    window.addEventListener("storage", syncAuthState);
-    window.addEventListener("authChanged", syncAuthState);
-    window.addEventListener("userUpdated", syncAuthState);
-
-    return () => {
-      window.removeEventListener("storage", syncAuthState);
-      window.removeEventListener("authChanged", syncAuthState);
-      window.removeEventListener("userUpdated", syncAuthState);
-    };
-  }, []);
+  const { user, token, logout } = useAuth();
 
   function handleLogout() {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    localStorage.removeItem("apiKey");
+    logout();
     setMenuOpen(false);
-    window.dispatchEvent(new Event("authChanged"));
     navigate("/login");
   }
 

@@ -1,3 +1,4 @@
+import { useAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useParams, useNavigate } from "react-router-dom";
@@ -50,8 +51,7 @@ function datesOverlap(startA, endA, startB, endB) {
 }
 
 export default function VenueDetails() {
-  const user = JSON.parse(localStorage.getItem("user") || "null");
-  const isVenueManager = user?.venueManager;
+  const { token, apiKey, isVenueManager } = useAuth();
 
   const { id } = useParams();
   const navigate = useNavigate();
@@ -105,10 +105,7 @@ export default function VenueDetails() {
     setBookingError("");
     setBookingSuccess("");
 
-    const token = localStorage.getItem("token");
-    const apiKey = localStorage.getItem("apiKey");
-
-    if (user?.venueManager) {
+    if (isVenueManager) {
       setBookingError("Venue managers cannot book venues.");
       return;
     }

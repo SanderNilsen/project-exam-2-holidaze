@@ -6,6 +6,7 @@ import AuthCard from "../components/ui/AuthCard";
 import FormMessage from "../components/ui/FormMessage";
 import { registerUser, loginUser, createApiKey } from "../api/auth";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const PageWrapper = styled.section`
   background: var(--background-light);
@@ -91,6 +92,8 @@ export default function Register() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const navigate = useNavigate();
+
+  const { saveAuth } = useAuth();
   
   function handleChange(event) {
     const { name, value, type, checked } = event.target;
@@ -138,15 +141,13 @@ export default function Register() {
 
       const apiKey = await createApiKey(loginData.data.accessToken);
 
-      localStorage.setItem("token", loginData.data.accessToken);
-      localStorage.setItem("apiKey", apiKey);
-      localStorage.setItem("user", JSON.stringify(loginData.data));
+      saveAuth({
+        user: loginData.data,
+        token: loginData.data.accessToken,
+        apiKey,
+      });
 
-      window.dispatchEvent(new Event("authChanged"));
-
-      setSuccessMessage("Account created successfully.");
-
-      navigate(formData.venueManager ? "/manager" : "/profile");
+      navigate(loginData.data.venueManager ? "/manager" : "/profile");
     } catch (error) {
       setFormError(error.message || "Something went wrong.");
     } finally {

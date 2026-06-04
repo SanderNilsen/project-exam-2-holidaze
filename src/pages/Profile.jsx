@@ -1,3 +1,4 @@
+import { useAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
@@ -39,11 +40,8 @@ function getBookingLocation(venue) {
 }
 
 export default function Profile() {
-  const storedUser = JSON.parse(localStorage.getItem("user") || "null");
-  const token = localStorage.getItem("token");
-  const apiKey = localStorage.getItem("apiKey");
+  const { user, token, apiKey, updateUser } = useAuth();
 
-  const [user, setUser] = useState(storedUser);
   const [bookings, setBookings] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [pageError, setPageError] = useState("");
@@ -227,10 +225,6 @@ export default function Profile() {
       <AvatarModal
         isOpen={isAvatarModalOpen}
         onClose={closeAvatarModal}
-        user={user}
-        token={token}
-        apiKey={apiKey}
-        onUserUpdated={setUser}
       />
     </>
   );

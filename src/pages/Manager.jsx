@@ -1,3 +1,4 @@
+import { useAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import Modal from "../components/ui/Modal";
@@ -47,10 +48,7 @@ const AddButton = styled.button`
 `;
 
 export default function Manager() {
-  const storedUser = JSON.parse(localStorage.getItem("user") || "null");
-  const [user, setUser] = useState(storedUser);
-  const token = localStorage.getItem("token");
-  const apiKey = localStorage.getItem("apiKey");
+  const { user, token, apiKey, updateUser } = useAuth();
 
   const [venues, setVenues] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -358,10 +356,6 @@ export default function Manager() {
       <AvatarModal
         isOpen={isAvatarModalOpen}
         onClose={closeAvatarModal}
-        user={user}
-        token={token}
-        apiKey={apiKey}
-        onUserUpdated={setUser}
       />
     </>
   );

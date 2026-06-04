@@ -1,3 +1,4 @@
+import { useAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
@@ -121,7 +122,7 @@ const SearchForm = styled.form`
 
 export default function Home() {
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem("user") || "null");
+  const { user } = useAuth();
 
   const [venues, setVenues] = useState([]);
   const [search, setSearch] = useState("");

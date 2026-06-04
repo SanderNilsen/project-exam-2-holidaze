@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
+import { useAuth } from "../../context/AuthContext";
 import Modal from "../../components/ui/Modal";
 import InputField from "../../components/ui/InputField";
 import PrimaryButton from "../../components/ui/PrimaryButton";
@@ -19,17 +20,19 @@ const ButtonRow = styled.div`
   flex-wrap: wrap;
 `;
 
-export default function AvatarModal({
-  isOpen,
-  onClose,
-  user,
-  token,
-  apiKey,
-  onUserUpdated,
-}) {
-  const [avatarUrl, setAvatarUrl] = useState(user?.avatar?.url || "");
+export default function AvatarModal({ isOpen, onClose }) {
+  const { user, token, apiKey, updateUser } = useAuth();
+
+  const [avatarUrl, setAvatarUrl] = useState("");
   const [formError, setFormError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      setAvatarUrl(user?.avatar?.url || "");
+      setFormError("");
+    }
+  }, [isOpen, user?.avatar?.url]);
 
   function handleClose() {
     setFormError("");
@@ -72,10 +75,7 @@ export default function AvatarModal({
         avatar: updatedProfile.avatar,
       };
 
-      localStorage.setItem("user", JSON.stringify(updatedUser));
-      window.dispatchEvent(new Event("userUpdated"));
-
-      onUserUpdated(updatedUser);
+      updateUser(updatedUser);
       handleClose();
     } catch (error) {
       setFormError(error.message || "Something went wrong.");

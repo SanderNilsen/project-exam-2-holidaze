@@ -6,6 +6,7 @@ import PrimaryButton from "../components/ui/PrimaryButton";
 import AuthCard from "../components/ui/AuthCard";
 import FormMessage from "../components/ui/FormMessage";
 import { loginUser, createApiKey } from "../api/auth";
+import { useAuth } from "../context/AuthContext";
 
 const PageWrapper = styled.section`
   background: var(--background-light);
@@ -55,6 +56,8 @@ export default function Login() {
   const [formError, setFormError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const { saveAuth } = useAuth();
+
   function handleChange(event) {
     const { name, value } = event.target;
 
@@ -90,15 +93,15 @@ export default function Login() {
         password: formData.password,
       });
 
-      const token = loginData.data.accessToken;
-      const apiKey = await createApiKey(token);
+      const apiKey = await createApiKey(loginData.data.accessToken);
 
-      localStorage.setItem("token", token);
-      localStorage.setItem("apiKey", apiKey);
-      localStorage.setItem("user", JSON.stringify(loginData.data));
+      saveAuth({
+        user: loginData.data,
+        token: loginData.data.accessToken,
+        apiKey,
+      });
 
-      window.dispatchEvent(new Event("authChanged"));
-      navigate("/");
+      navigate(loginData.data.venueManager ? "/manager" : "/profile");
     } catch (error) {
       setFormError(error.message || "Something went wrong.");
     } finally {
